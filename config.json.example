@@ -1,0 +1,12 @@
+{
+	"clientId": "ClientID",
+	"guildId": "GuildID",
+	"token": "TOKEN",
+	"joinRole": [],
+	"utils": {
+		"HOSTNAME": "localhost",
+		"DBUSERNAME": "root",
+		"DBPASSWORD": "password",
+		"DATABASE": "database"
+	}
+}
