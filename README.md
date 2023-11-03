@@ -51,3 +51,5 @@ Install the following before continuing to contribute to this project:
 5. Invite the bot to your server and you should see it online! Make sure to give it the `Administrator` permission. If you want this done automatically, check the `Administrator` permission under `Bot Permissions` in the same tab and copy the link to invite the bot. <br><br>
 6. The bot should now be online and you can start contributing to the project! <br><br>
 7. To test the bot, you can type `/ping` in the server and it should respond with `Pong!` <br><br>
+---
+Copyright © Town of Host: Enhanced 2023
