@@ -1,0 +1,19 @@
+{
+  "name": "slash-commands",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./deploy-commands.js && node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/builders": "^1.6.5",
+    "@discordjs/rest": "^2.0.1",
+    "discord.js": "^14.13.0",
+    "mysql2": "^3.6.2"
+  }
+}
