@@ -15,18 +15,21 @@ function checkFaction(string) {
 }
 
 function internalNameToRoleName(gitJson) {
-    const roleInfo = {};
+    const result = {};
 
     for (const key in gitJson) {
         if (key.includes("InfoLong")) {
             const internalName = key.replace("InfoLong", "");
             if (internalName in gitJson) {
-                roleInfo[formatRole(gitJson[internalName].toLowerCase())] = gitJson[key];
+                result[formatRole(gitJson[internalName].toLowerCase())] = {
+                    Description: gitJson[key],
+                    codeName: internalName
+                };
             }
         }
     }
-    console.log(`rolecmd: internalNameToRoleName successfully converted ${Object.keys(roleInfo).length} InfoLongs.`);
-    return roleInfo;
+    console.log(`rolecmd: internalNameToRoleName successfully converted ${Object.keys(result).length} InfoLongs.`);
+    return result;
 }
 
 module.exports = {
@@ -65,8 +68,10 @@ module.exports = {
 
         const lang = internalNameToRoleName(langJson);
 
-        let roleInfo = lang[roleInput];
-        if (!roleInfo) return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true })
+        let roleInfo = lang[roleInput].Description;
+        let roleCodeName = lang[roleInput].codeName;
+
+        if (!roleInfo || !roleCodeName) return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true })
             .then(console.log(`rolecmd: Role ${roleInput} does not exist.`));
 
         const sliceIndex = roleInfo.indexOf(":");
@@ -75,6 +80,19 @@ module.exports = {
         const roleType = roleInfo.slice(1, sliceIndex - 1);
         console.log("rolecmd - Role Type: " + roleType);
 
+        // role colors
+        let roleColorURL;
+        await fetch(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json`)
+            .then((response) => {
+                roleColorURL = response;
+                console.log('roleColor - RawURL: https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json');
+            })
+            .catch(() =>
+                interaction.reply({ content: `roleColor URL invalid`, ephemeral: true }));
+        const roleColorJson = await roleColorURL.json();
+        let roleColor = "#ff1919";
+        if (roleCodeName in roleColorJson) roleColor = roleColorJson[roleCodeName];
+
         // Extract role description from the roleInfo
         roleInfo = roleInfo.slice(sliceIndex + 1);
         console.log("rolecmd - Role Description: " + roleInfo);
@@ -82,7 +100,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setTitle(roleInput + ": " + roleType)
             .setDescription(roleInfo)
-            .setColor(checkFaction(roleType))
+            .setColor(roleColor)
             .setTimestamp()
             .addFields(
                 { name: "For more information:", value: "[Check out our Website!](https://tohre.dev/Roles.html)", inline: true },
