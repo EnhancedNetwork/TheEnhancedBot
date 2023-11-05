@@ -51,7 +51,7 @@ module.exports = {
             )),
     async execute(interaction) {
 
-        const roleInput = formatRole(interaction.options.getString('role'));
+        const roleInput = formatRole(interaction.options.getString('role').toLowerCase());
         console.log("rolecmd - Input: " + roleInput);
         const langInput = interaction.options.getString('language') || "en_US";
         console.log("rolecmd - Language: " + langInput);
