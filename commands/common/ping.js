@@ -5,6 +5,6 @@ module.exports = {
         .setName('ping')
         .setDescription('Sends a test message to the bot'),
     async execute(interaction) {
-        interaction.reply({ content: "Pong!" }).then(console.log(`websitecmd: Sent by ${interaction.member.id}\n-----------------------`));
+        interaction.reply({ content: "Pong!", ephemeral: true }).then(console.log(`pingcmd: Sent by ${interaction.member.id}\n-----------------------`));
     }
 }
