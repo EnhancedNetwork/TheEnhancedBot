@@ -8,7 +8,6 @@ module.exports = {
         .setDescription('Say a message')
         .addStringOption(option => option.setName('message').setDescription('The message to say').setRequired(true)),
     async execute(interaction) {
-        console.log("Test")
         if(interaction.member.id != "800552171048927243") return interaction.editReply("You are not allowed to use this command");
 
         interaction.channel.send(interaction.options.getString('message'));

@@ -7,13 +7,6 @@ function formatRole(string) {
     return stringArray.join(" ");
 }
 
-function checkFaction(string) {
-    if (string === "Crewmates") return "#8cffff";
-    else if (string === "Impostors") return "#ff0000";
-    else if (string === "Neutrals") return "#7c8c8d";
-    else if (string === "Add-ons") return "#ff9ace";
-}
-
 function internalNameToRoleName(gitJson) {
     const result = {};
 
