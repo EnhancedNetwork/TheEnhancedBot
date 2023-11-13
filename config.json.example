@@ -2,6 +2,7 @@
 	"clientId": "ClientID",
 	"guildId": "GuildID",
 	"token": "TOKEN",
+	"devIDs": [],
 	"joinRole": [],
 	"utils": {
 		"HOSTNAME": "localhost",

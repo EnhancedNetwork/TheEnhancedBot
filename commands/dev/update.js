@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { devIDs } = require('../../config.json');
 const con = require('../../mysqlConn.js');
 const { readFileSync } = require('fs');
 const types = JSON.parse(readFileSync('./roleTypes.json'));
@@ -119,7 +120,8 @@ module.exports = {
 
         console.log(`updatecmd - Input: ${user.id} | ${overhead_tag} | ${color} | ${up} | ${dev} | ${colorcmd} | ${debug}`);
 
-        if (discordId != "800552171048927243") return interaction.reply({ content: "You are not allowed to use this command", ephemeral: true });
+        if (!devIDs.includes(discordId))
+            return interaction.reply({ content: "You are not allowed to use this command", ephemeral: true });
 
         let userInfo = await con.check(`SELECT * FROM role_table WHERE userID = '${user.id}'`);
         if (!userInfo[0])
