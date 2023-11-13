@@ -61,6 +61,7 @@ module.exports = {
 
         const lang = internalNameToRoleName(langJson);
 
+        if (!lang[roleInput]) return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true })
         let roleInfo = lang[roleInput].Description;
         let roleCodeName = lang[roleInput].codeName;
 

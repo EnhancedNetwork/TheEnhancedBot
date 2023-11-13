@@ -35,7 +35,7 @@ module.exports = {
                 { name: "Is Developer", value: userInfo.isDev ? "✅" : "❌", inline: true },
                 { name: "Color Command Access", value: userInfo.isColor ? "✅" : "❌", inline: true },
                 { name: "Tag", value: userInfo.overhead_tag ? userInfo.overhead_tag : "None", inline: true },
-                { name: "Want to change your subscription tier?", value: `Visit [your account settings](https://ko-fi.com/tohen) to change your subscription tier]`},
+                { name: "Want to change your subscription tier?", value: `Visit [your account settings](https://ko-fi.com/tohen) to change your subscription tier`},
             )
             .setColor(userInfo.color ? userInfo.color : interaction.member.displayHexColor)
             .setFooter({ text: "If you have any questions, please contact a developer." })
