@@ -7,6 +7,10 @@
         "s_cr": {
           "name": "Contributor",
           "roleID": "1096793713453314098"
+        },
+        "s_bo": {
+          "name": "Booster",
+          "roleID": "1100778961795039292"
         }
       },
     "sponsors": {
