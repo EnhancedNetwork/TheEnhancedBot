@@ -1,8 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { devIDs } = require('../../config.json');
 const con = require('../../mysqlConn.js');
-const { readFileSync } = require('fs');
-const types = JSON.parse(readFileSync('./roleTypes.json'));
 
 async function updateOverheadTag(tag, user) {
     try {

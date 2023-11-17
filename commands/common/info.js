@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const con = require('../../mysqlConn.js');
 const { readFileSync } = require('fs');
 const types = JSON.parse(readFileSync('./roleTypes.json'));
+const api = require('../../apiRequests.js');
 
 function checkRole(type) {
     for (const categoryKey in types) {
@@ -20,12 +21,13 @@ module.exports = {
         .setDescription('Get info about your current linked account'),
     async execute(interaction) {
         const discordId = interaction.user.id;
-        let userInfo = await con.check(`SELECT * FROM role_table WHERE userID = '${discordId}'`);
-        userInfo = userInfo[0];
+        let userInfo = await api.getUserByID(discordId);
 
         if (!userInfo)
             return interaction.reply({ content: "You do not have an account linked. Please link your account first.", ephemeral: true });
 
+        if (userInfo.color == 'null') userInfo.color = null;
+        if (userInfo.overhead_tag == 'null') userInfo.overhead_tag = null;
         const embed = new EmbedBuilder()
             .setTitle(`Info for ${interaction.user.username}`)
             .addFields(
