@@ -1,104 +1,104 @@
 {
-    "misc": {
-        "s_tr": {
-          "name": "Tester",
-          "roleID": "1112182767053197378"
-        },
-        "s_cr": {
-          "name": "Contributor",
-          "roleID": "1096793713453314098"
-        }
-      },
-    "sponsors": {
-      "s_gd": {
-        "name": "Guardian",
-        "roleID": "1160998302767136798"
-      },
-      "s_te": {
-        "name": "Technician",
-        "roleID": "1160998239332474882"
-      },
-      "s_ms": {
-        "name": "Maestro",
-        "roleID": "1160998207954886817"
-      },
-      "s_sp": {
-        "name": "Specialist",
-        "roleID": "1160998162832576552"
-      },
-      "s_in": {
-        "name": "Insider",
-        "roleID": "1160996676731932803"
-      },
-      "s_it": {
-        "name": "Initiate",
-        "roleID": "1160995901184168036"
-      },
-      "s_bo": {
-        "name": "Booster",
-        "roleID": "1100778961795039292"
-      }
+  "misc": {
+    "s_cr": {
+      "name": "Contributor",
+      "roleID": "1096793713453314098"
     },
-    "translators": {
-      "t_de": {
-        "name": "German",
-        "roleID": "1173005132930220162"
-      },
-      "t_la": {
-        "name": "Latin American",
-        "roleID": "1173001360313155624"
-      },
-      "t_es": {
-        "name": "Spanish",
-        "roleID": "1173001322090463232"
-      },
-      "t_fi": {
-        "name": "Filipino",
-        "roleID": "1173008451958472785"
-      },
-      "t_fr": {
-        "name": "French",
-        "roleID": "1173001722180935702"
-      },
-      "t_ir": {
-        "name": "Irish",
-        "roleID": "1173009115577057330"
-      },
-      "t_it": {
-        "name": "Italian",
-        "roleID": "1173001392848371873"
-      },
-      "t_jp": {
-        "name": "Japanese",
-        "roleID": "1173001589196329030"
-      },
-      "t_nl": {
-        "name": "Dutch",
-        "roleID": "1173010280733757481"
-      },
-      "t_br": {
-        "name": "Brazilian",
-        "roleID": "1173001657433477150"
-      },
-      "t_ru": {
-        "name": "Russian",
-        "roleID": "1173001128988909599"
-      },
-      "t_cs": {
-        "name": "Chinese Simplified",
-        "roleID": "1173001285709078548"
-      },
-      "t_ct": {
-        "name": "Chinese Traditional",
-        "roleID": "1173001232445612042"
-      },
-      "t_ko": {
-        "name": "Korean",
-        "roleID": "1173014875694432407"
-      },
-      "t_pt": {
-        "name": "Portuguese",
-        "roleID": "1173015108570599526"
-      }
+    "s_tr": {
+      "name": "Tester",
+      "roleID": "1112182767053197378"
+    }
+  },
+  "sponsors": {
+    "s_gd": {
+      "name": "Guardian",
+      "roleID": "1160998302767136798"
+    },
+    "s_te": {
+      "name": "Technician",
+      "roleID": "1160998239332474882"
+    },
+    "s_ms": {
+      "name": "Maestro",
+      "roleID": "1160998207954886817"
+    },
+    "s_sp": {
+      "name": "Specialist",
+      "roleID": "1160998162832576552"
+    },
+    "s_in": {
+      "name": "Insider",
+      "roleID": "1160996676731932803"
+    },
+    "s_it": {
+      "name": "Initiate",
+      "roleID": "1160995901184168036"
+    },
+    "s_bo": {
+      "name": "Booster",
+      "roleID": "1100778961795039292"
+    }
+  },
+  "translators": {
+    "t_de": {
+      "name": "German",
+      "roleID": "1173005132930220162"
+    },
+    "t_la": {
+      "name": "Latin American",
+      "roleID": "1173001360313155624"
+    },
+    "t_es": {
+      "name": "Spanish",
+      "roleID": "1173001322090463232"
+    },
+    "t_fi": {
+      "name": "Filipino",
+      "roleID": "1173008451958472785"
+    },
+    "t_fr": {
+      "name": "French",
+      "roleID": "1173001722180935702"
+    },
+    "t_ir": {
+      "name": "Irish",
+      "roleID": "1173009115577057330"
+    },
+    "t_it": {
+      "name": "Italian",
+      "roleID": "1173001392848371873"
+    },
+    "t_jp": {
+      "name": "Japanese",
+      "roleID": "1173001589196329030"
+    },
+    "t_nl": {
+      "name": "Dutch",
+      "roleID": "1173010280733757481"
+    },
+    "t_br": {
+      "name": "Brazilian",
+      "roleID": "1173001657433477150"
+    },
+    "t_ru": {
+      "name": "Russian",
+      "roleID": "1173001128988909599"
+    },
+    "t_cs": {
+      "name": "Chinese Simplified",
+      "roleID": "1173001285709078548"
+    },
+    "t_ct": {
+      "name": "Chinese Traditional",
+      "roleID": "1173001232445612042"
+    },
+    "t_ko": {
+      "name": "Korean",
+      "roleID": "1173014875694432407"
+    },
+    "t_pt": {
+      "name": "Portuguese",
+      "roleID": "1173015108570599526"
     }
   }
+}
