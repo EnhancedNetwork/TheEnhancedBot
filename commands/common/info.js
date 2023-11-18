@@ -1,8 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const con = require(__dirname +'/../../mysqlConn.js');
 const { readFileSync } = require('fs');
 const types = JSON.parse(readFileSync('./roleTypes.json'));
-const api = require(__dirname + '/../../apiRequests.js');
+const api = require(__dirname + '\\..\\apiRequests.js');
 
 function checkRole(type) {
     for (const categoryKey in types) {
