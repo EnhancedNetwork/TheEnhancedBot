@@ -22,7 +22,6 @@ module.exports = {
             return interaction.reply({ content: "This user does not have an account linked. Please have them link their account first.", ephemeral: true });
 
         let result = await api.deleteUserByID(user.id);
-        console.log(result);
         console.log(`deletecmd: Result - ${result.result}`);
         return interaction.reply({ content: `Successfully deleted ${user}!`, ephemeral: true });
 
