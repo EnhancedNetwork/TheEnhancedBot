@@ -7,10 +7,6 @@
         "s_cr": {
           "name": "Contributor",
           "roleID": "1096793713453314098"
-        },
-        "s_bo": {
-          "name": "Booster",
-          "roleID": "1100778961795039292"
         }
       },
     "sponsors": {
@@ -37,6 +33,10 @@
       "s_it": {
         "name": "Initiate",
         "roleID": "1160995901184168036"
+      },
+      "s_bo": {
+        "name": "Booster",
+        "roleID": "1100778961795039292"
       }
     },
     "translators": {

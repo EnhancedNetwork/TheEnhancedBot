@@ -75,7 +75,7 @@ module.exports = {
             return interaction.reply({ content: "Invalid Friend Code. Format must include the `#1234` at the end. Example: `friendcode#1234`", ephemeral: true });
         }
 
-        if (role[1].startsWith("s_") && (role[1] !== "s_it" && role[1] !== "s_in")) upAccess = 1;
+        if (role[1].startsWith("s_") && (role[1] !== "s_it" && role[1] !== "s_in" && role[1] !== "s_bo")) upAccess = 1;
         if (role[1] === "s_cr") {
             devAccess = 1;
             colorAccess = 1;
