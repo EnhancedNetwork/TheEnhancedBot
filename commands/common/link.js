@@ -30,20 +30,58 @@ module.exports = {
         const discordId = interaction.user.id;
         const discordName = interaction.user.username;
         let upAccess = 0;
+        let devAccess = 0;
+        let colorAccess = 0;
+        let debugAccess = 0;
+        console.log(`-----------------------\nlinkcmd: Received by ${discordId}`);
 
         const role = checkRole(interaction.member);
-        if (!role) return interaction.reply({ content: "You are not eligible to link your account. Please contact a developer.", ephemeral: true });
+        if (!role) {
+            let noRoleEmbed = new EmbedBuilder()
+                .setTitle("Unable to Link Account")
+                .setDescription("You are not eligible to link your account. If you believe this is in error, please contact a developer.")
+                .addFields(
+                    {
+                        name: "Want to become a sponsor and get access to Dev and Canary builds?",
+                        value: "Visit [our Ko-Fi page](https://ko-fi.com/tohen) to become a sponsor for as little as __**$3 a month**__!"
+                    },
+                    {
+                        name: "Canary Builds - $3/month:",
+                        value: " Slightly more stable. Updated 2-3 times a **month**. [Donate Here](https://ko-fi.com/tohen/tiers#)",
+                        inline: true
+                    },
+                    {
+                        name: "Dev Builds - $5/month:",
+                        value: "Unstable but lots of features. Updated 2-3 times a **week**. [Donate Here](https://ko-fi.com/tohen/tiers#)",
+                        inline: true
+                    }
+                )
+                .setColor("#FF0000")
+                .setTimestamp()
+                .setFooter({ text: "Can't donate? No worries! We release full STABLE builds every month!" });
+            console.log(`linkcmd: Command Cancelled ${discordName} does not have a sponsor role\n-----------------------`);
+            return interaction.reply({ embeds: [noRoleEmbed], ephemeral: true });
+        }
 
         const userInfo = await api.getUserByID(discordId);
-        // console.log(userInfo);
 
-        if (userInfo)
+        if (userInfo.userID && userInfo.friendcode !== "null") {
+            console.log(`linkcmd: Command Cancelled ${discordName} already has an account linked\n-----------------------`);
             return interaction.reply({ content: "You already have this account linked. Please unlink it first.", ephemeral: true });
+        }
+            
 
-        if (checkCode(codeInput) === false)
+        if (checkCode(codeInput) === false) {
+            console.log(`linkcmd: Command Cancelled ${discordName} entered an invalid friend code\n-----------------------`);
             return interaction.reply({ content: "Invalid Friend Code. Format must include the `#1234` at the end. Example: `friendcode#1234`", ephemeral: true });
+        }
 
         if (role[1].startsWith("s_") && (role[1] !== "s_it" && role[1] !== "s_in")) upAccess = 1;
+        if (role[1] === "s_cr") {
+            devAccess = 1;
+            colorAccess = 1;
+            debugAccess = 1;
+        }
 
         api.updateUserByID({
             userID: discordId,
@@ -53,11 +91,13 @@ module.exports = {
             overhead_tag: null,
             color: null,
             isUP: upAccess,
-            isDev: 0,
-            colorCmd: 0,
-            debug: 0
+            isDev: devAccess,
+            colorCmd: colorAccess,
+            debug: debugAccess
         });
-        
+
+        console.log(`linkcmd: Details - ${discordId} - ${discordName} - ${codeInput} - ${role[1]} - ${upAccess} - ${devAccess} - ${colorAccess} - ${debugAccess}`);
+        console.log(`linkcmd: Command Completed ${discordName} linked their account.\n-----------------------`);
         return interaction.reply({ content: "Successfully linked your account!", ephemeral: true });
     }
 }

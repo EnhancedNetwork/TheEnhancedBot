@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { devIDs } = require('../../config.json');
-const con = require('../../mysqlConn.js');
-const api = require('../../apiRequests.js');
+const { devIDs } = require(__dirname + '/../../config.json');
+const api = require(__dirname + '\\..\\..\\apiRequests.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,11 +17,13 @@ module.exports = {
             return interaction.reply({ content: "You are not allowed to use this command", ephemeral: true });
 
         let userInfo = await api.getUserByID(user.id);
-        console.log(userInfo);
-        if (!userInfo)
+
+        if (userInfo.error)
             return interaction.reply({ content: "This user does not have an account linked. Please have them link their account first.", ephemeral: true });
 
-        await api.deleteUserByID(user.id);
+        let result = await api.deleteUserByID(user.id);
+        console.log(result);
+        console.log(`deletecmd: Result - ${result.result}`);
         return interaction.reply({ content: `Successfully deleted ${user}!`, ephemeral: true });
 
     }

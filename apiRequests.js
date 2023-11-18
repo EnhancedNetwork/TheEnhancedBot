@@ -1,15 +1,15 @@
-const config = require('./config.json');
+const config = require(__dirname +'/config.json');
 
 async function getUserByID(id) {
-    const fetchURL = `http://localhost:3000/userInfo?token=${config.utils.TOKEN}&uID=${id}`;
+    const fetchURL = `http://localhost:5000/userInfo?token=${config.utils.TOKEN}&uID=${id}`;
     let userInfo = await fetch(fetchURL, { method: 'GET' });
     userInfo = await userInfo.json();
     
-    return userInfo[0];
+    return userInfo;
 }
 
 async function updateUserByID(data) {
-    const fetchURL = `http://localhost:3000/userInfo?token=${config.utils.TOKEN}`;
+    const fetchURL = `http://localhost:5000/userInfo?token=${config.utils.TOKEN}`;
     const fetchOptions = {
         method: 'POST',
         headers: {
@@ -24,11 +24,11 @@ async function updateUserByID(data) {
 }
 
 async function deleteUserByID(id) {
-    const fetchURL = `http://localhost:3000/userInfo/${id}?token=${config.utils.TOKEN}`;
+    const fetchURL = `http://localhost:5000/userInfo/${id}?token=${config.utils.TOKEN}`;
     let userInfo = await fetch(fetchURL, { method: 'DELETE' });
     userInfo = await userInfo.json();
 
-    return userInfo.data;
+    return userInfo;
 }
 
 module.exports = {

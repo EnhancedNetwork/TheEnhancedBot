@@ -5,6 +5,9 @@ module.exports = {
         .setName('ping')
         .setDescription('Sends a test message to the bot'),
     async execute(interaction) {
-        interaction.reply({ content: "Pong!", ephemeral: true }).then(console.log(`pingcmd: Sent by ${interaction.member.id}\n-----------------------`));
+        console.log(`-----------------------\npingcmd: Received by ${interaction.member.id}`);
+        interaction.reply({ content: "Pong!", ephemeral: true })
+        .then(console.log(`pingcmd: Sent by ${interaction.member.id}\n-----------------------`))
+        .catch(err => console.log(`pingcmd: Error: ${err}\n-----------------------`));
     }
 }

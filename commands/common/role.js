@@ -45,15 +45,15 @@ module.exports = {
     async execute(interaction) {
 
         const roleInput = formatRole(interaction.options.getString('role').toLowerCase());
-        console.log("rolecmd - Input: " + roleInput);
+        console.log("rolecmd: Input - " + roleInput);
         const langInput = interaction.options.getString('language') || "en_US";
-        console.log("rolecmd - Language: " + langInput);
+        console.log("rolecmd: Language - " + langInput);
 
         let repoLangURL;
         await fetch(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`)
             .then((response) => {
                 repoLangURL = response;
-                console.log(`rolecmd - RawURL: https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`);
+                console.log(`rolecmd: RawURL - https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`);
             })
             .catch(() =>
                 interaction.reply({ content: `rolecmd: The language ${langInput} does not exist.`, ephemeral: true }));
@@ -72,14 +72,14 @@ module.exports = {
 
         // Extract role type from the roleInfo
         const roleType = roleInfo.slice(1, sliceIndex - 1);
-        console.log("rolecmd - Role Type: " + roleType);
+        console.log("rolecmd: Role Type - " + roleType);
 
         // role colors
         let roleColorURL;
         await fetch(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json`)
             .then((response) => {
                 roleColorURL = response;
-                console.log('roleColor - RawURL: https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json');
+                console.log('roleColor: RawURL - https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json');
             })
             .catch(() =>
                 interaction.reply({ content: `roleColor URL invalid`, ephemeral: true }));
