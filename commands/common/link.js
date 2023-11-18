@@ -23,9 +23,9 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('link')
         .setDescription('Link your Discord to your Among Us Friend Code')
-        .addStringOption(option => option.setName('code').setDescription('Your Among Us Friend Code').setRequired(true)),
+        .addStringOption(option => option.setName('friendcode').setDescription('Your Among Us Friend Code').setRequired(true)),
     async execute(interaction) {
-        const codeInput = interaction.options.getString('code');
+        const codeInput = interaction.options.getString('friendcode');
         const discordId = interaction.user.id;
         const discordName = interaction.user.username;
         let upAccess = 0;
