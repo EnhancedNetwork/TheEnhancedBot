@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { devIDs } = require(__dirname + '/../../config.json');
-const api = require(__dirname + '\\..\\..\\apiRequests.js');
+const api = require('../../apiRequests.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
