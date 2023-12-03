@@ -14,7 +14,7 @@ module.exports = {
 
         const message = interaction.options.getString('message');
         const channel = interaction.options.getChannel('channel') ? interaction.options.getChannel('channel') : interaction.channel;
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true, fetchReply: true });
         // Log the command usage in a separate channel
         const logChannel = interaction.guild.channels.cache.get('1122232494402580490');
         let logEmbed = new EmbedBuilder()
