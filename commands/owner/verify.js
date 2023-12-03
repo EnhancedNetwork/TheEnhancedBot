@@ -8,9 +8,9 @@ module.exports = {
         .setDescription('Verify yourself!'),
     execute: async (interaction) => {
         const uID = interaction.user.id;
-        if(uID != "800552171048927243") return interaction.reply("You are not allowed to use this command");
+        if (uID != "800552171048927243")
+            return interaction.reply({ content: "You do not have permission to use this command", ephemeral: true });
         console.log(`${uID}: beginning command; Verify`);
-
         const row = new ActionRowBuilder().addComponents(
             // create a discord button
             new ButtonBuilder()

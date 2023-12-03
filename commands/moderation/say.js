@@ -6,12 +6,14 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('say')
         .setDescription('Say a message')
-        .addStringOption(option => option.setName('message').setDescription('The message to say').setRequired(true)),
+        .addStringOption(option => option.setName('message').setDescription('The message to say').setRequired(true))
+        .addChannelOption(option => option.setName('channel').setDescription('The channel to say the message in')),
     async execute(interaction) {
         if (!interaction.member.roles.cache.has('1180344568152076331'))
             return interaction.reply({ content: "You do not have permission to use this command", ephemeral: true });
 
         const message = interaction.options.getString('message');
+        const channel = interaction.options.getChannel('channel') ? interaction.options.getChannel('channel') : interaction.channel;
         // Log the command usage in a separate channel
         const logChannel = interaction.guild.channels.cache.get('1122232494402580490');
         let logEmbed = new EmbedBuilder()
@@ -33,7 +35,7 @@ module.exports = {
             .setColor("#FF0000")
             .setTimestamp()
             .setFooter({ text: `Town of Mods by TOHE` });
-        await interaction.channel.send({ embeds: [embed] });
+        await channel.send({ embeds: [embed] });
         await interaction.reply({ content: "Done", ephemeral: true })
     }
 }
