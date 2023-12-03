@@ -37,5 +37,6 @@ module.exports = {
             .setFooter({ text: `Town of Mods by TOHE` });
         await channel.send({ embeds: [embed] });
         await interaction.reply({ content: "Done", ephemeral: true })
+            .catch(console.error);
     }
 }
