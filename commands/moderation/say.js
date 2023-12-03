@@ -14,6 +14,7 @@ module.exports = {
 
         const message = interaction.options.getString('message');
         const channel = interaction.options.getChannel('channel') ? interaction.options.getChannel('channel') : interaction.channel;
+        await interaction.deferReply();
         // Log the command usage in a separate channel
         const logChannel = interaction.guild.channels.cache.get('1122232494402580490');
         let logEmbed = new EmbedBuilder()
@@ -36,7 +37,7 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: `Town of Mods by TOHE` });
         await channel.send({ embeds: [embed] });
-        await interaction.reply({ content: "Done", ephemeral: true })
+        await interaction.editReply({ content: "Done", ephemeral: true })
             .catch(console.error);
     }
 }
