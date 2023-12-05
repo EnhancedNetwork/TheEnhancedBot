@@ -12,7 +12,6 @@ async function findUser(friendCode, hashPUID) {
     if (friendCode) {
         friendCode = friendCode.replace('#', '%23');
         let result = await api.getUserByFriendCode(friendCode);
-        console.log(result);
         if (result.name) return result;
     }
     if (hashPUID) {
