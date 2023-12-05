@@ -23,8 +23,8 @@ module.exports = {
             .setColor("#FF0000")
             .setTimestamp()
             .setFooter({ text: `Town of Mods by TOHE` });
-        await channel.send({ embeds: [embed] });
-        let msg = await interaction.editReply({ content: "Done", ephemeral: true })
+        let msg = await channel.send({ embeds: [embed] });
+         await interaction.editReply({ content: "Done", ephemeral: true })
             .catch(console.error);
 
         // Log the command usage in a separate channel
