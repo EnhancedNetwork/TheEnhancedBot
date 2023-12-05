@@ -15,20 +15,7 @@ module.exports = {
         const message = interaction.options.getString('message');
         const channel = interaction.options.getChannel('channel') ? interaction.options.getChannel('channel') : interaction.channel;
         await interaction.deferReply({ ephemeral: true, fetchReply: true });
-        // Log the command usage in a separate channel
-        const logChannel = interaction.guild.channels.cache.get('1122232494402580490');
-        let logEmbed = new EmbedBuilder()
-            .setTitle(interaction.member.displayName + " used /say")
-            .setColor("#FF0000")
-            .setTimestamp()
-            .addFields([
-                { name: "Channel:", value: `<#${interaction.channel.id}>`, inline: true },
-                { name: "User:", value: `${interaction.user} (${interaction.user.id})`, inline: true },
-                { name: "Message:", value: message, inline: false },
-            ])
-            .setFooter({ text: `User ID: ${interaction.user.id}` });
-        await logChannel.send({ embeds: [logEmbed] });
-
+        
         // Send the message in an embed
         let embed = new EmbedBuilder()
             .setTitle("This message was sent by a staff member")
@@ -37,7 +24,21 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: `Town of Mods by TOHE` });
         await channel.send({ embeds: [embed] });
-        await interaction.editReply({ content: "Done", ephemeral: true })
+        let msg = await interaction.editReply({ content: "Done", ephemeral: true })
             .catch(console.error);
+
+        // Log the command usage in a separate channel
+        const logChannel = interaction.guild.channels.cache.get('1122232494402580490');
+        let logEmbed = new EmbedBuilder()
+            .setTitle(interaction.member.displayName + " used /say")
+            .setColor("#FF0000")
+            .setTimestamp()
+            .addFields([
+                { name: "Channel:", value: `<#${interaction.channel.id}> - [Jump to message](${msg.url})`, inline: true },
+                { name: "User:", value: `${interaction.user} (${interaction.user.id})`, inline: true },
+                { name: "Message:", value: message, inline: false },
+            ])
+            .setFooter({ text: `User ID: ${interaction.user.id}` });
+        await logChannel.send({ embeds: [logEmbed] });
     }
 }
