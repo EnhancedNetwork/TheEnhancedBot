@@ -41,7 +41,6 @@ async function deleteUserByID(id) {
 
 async function getUserByFriendCode(friendCode) {
     const fetchURL = `http://localhost:5000/eac/?token=${config.utils.TOKEN}&friendcode=${friendCode}`;
-    console.log(fetchURL);
     let userInfo = await fetch(fetchURL, { method: 'GET' });
     userInfo = await userInfo.json();
 
