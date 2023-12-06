@@ -136,7 +136,7 @@ module.exports = {
             if (!result)
                 return interaction.reply({ content: "No user found with that friend code or hash PUID", ephemeral: true });
 
-            result = await api.unban({ friendcode: friendCode.replace('#', '%23'), hashPUID: result.hashPUID });
+            result = await api.unban({ friendcode: friendCode ? friendCode.replace('#', '%23') : null, hashPUID: result.hashPUID });
             if (result.message !== "User removed successfully")
                 return interaction.reply({ content: "Error: " + result.message, ephemeral: true });
             else
