@@ -68,15 +68,18 @@ module.exports = {
             console.log(`linkcmd: Command Cancelled ${discordName} already has an account linked\n-----------------------`);
             return interaction.reply({ content: "You already have this account linked. Please unlink it first.", ephemeral: true });
         }
-            
+
 
         if (checkCode(codeInput) === false) {
             console.log(`linkcmd: Command Cancelled ${discordName} entered an invalid friend code\n-----------------------`);
             return interaction.reply({ content: "Invalid Friend Code. Format must include the `#1234` at the end. Example: `friendcode#1234`", ephemeral: true });
         }
 
-        if (role[1].startsWith("s_") && (role[1] !== "s_it" && role[1] !== "s_in" && role[1] !== "s_bo")) upAccess = 1;
-        if (role[1] === "s_cr") {
+        if (role[1].startsWith("s_") && (role[1] !== "s_it" && role[1] !== "s_in" && role[1] !== "s_bo" && role[1] !== "s_jc"))
+            upAccess = 1;
+        else if (role[1] === "s_jc")
+            debugAccess = 1;
+        else if (role[1] === "s_cr") {
             devAccess = 1;
             colorAccess = 1;
             debugAccess = 1;
