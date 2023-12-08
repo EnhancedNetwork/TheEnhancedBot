@@ -77,7 +77,8 @@ module.exports = {
 
         if (role[1].startsWith("s_") && (role[1] !== "s_it" && role[1] !== "s_in" && role[1] !== "s_bo" && role[1] !== "s_jc"))
             upAccess = 1;
-        else if (role[1] === "s_jc")
+        
+        if (role[1] === "s_jc")
             debugAccess = 1;
         else if (role[1] === "s_cr") {
             devAccess = 1;
