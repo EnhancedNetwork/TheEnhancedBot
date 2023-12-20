@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { AttachmentBuilder, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { readFileSync } = require('fs');
 const types = JSON.parse(readFileSync('./roleTypes.json'));
 const api = require('../../apiRequests.js');
@@ -59,20 +59,23 @@ module.exports = {
         // The context will be used to modify the canvas
         const canvas = Canvas.createCanvas(512, 512);
         const context = canvas.getContext('2d');
-        const background = await Canvas.loadImage('./wallpaper.jpg');
+        const background = await Canvas.loadImage('./Images/Color.png');
 
         // This uses the canvas dimensions to stretch the image onto the entire canvas
         context.drawImage(background, 0, 0, canvas.width, canvas.height);
         // Set the color of the image to the color the user chose
         context.fillStyle = `#${color}`;
+        // Draw a rectangle with the color
+        context.fillRect(0, 0, canvas.width, canvas.height);
 
         // Use the helpful Attachment class structure to process the file for you
-        const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'color.png' });
+        const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'Color.png' });
 
         let embed = new EmbedBuilder()
             .setTitle(`Color Updated`)
             .setDescription(`Your color has been updated to **#${color}**!`)
-            .setColor(color);
-        return interaction.reply({ content: `Successfully updated your role to **${role[0].name}**!`, ephemeral: true });
+            .setColor(color)
+            .setThumbnail(`attachment://${attachment.name}`)
+        return interaction.reply({ embeds: [embed], files: [attachment], ephemeral: true });
     }
 }
