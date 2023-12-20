@@ -81,7 +81,6 @@ module.exports = {
             }
         }
 
-        console.log(`Erase Inactive: ${inactiveUsers.length} inactive users found`);
         console.log(`Erase Inactive: ${boosters.length} boosters found`);
         console.log(`Erase Inactive: ${insiders.length} insiders found`);
         console.log(`Erase Inactive: ${specialists.length} specialists found`);
@@ -93,6 +92,7 @@ module.exports = {
         console.log(`Erase Inactive: ${testers.length} testers found`);
         console.log(`Erase Inactive: ${translators.length} translators found`);
         console.log(`Erase Inactive: ${notFoundUsers.length} users not found`);
+        console.log(`Erase Inactive: ${inactiveUsers.toString()} inactive users found`);
 
         return interaction.reply({ content: `Successfully checked!`, ephemeral: true });
 
