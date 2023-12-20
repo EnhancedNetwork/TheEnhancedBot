@@ -1,7 +1,8 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { readFileSync } = require('fs');
 const types = JSON.parse(readFileSync('./roleTypes.json'));
 const api = require('../../apiRequests.js');
+const Canvas = require('@napi-rs/canvas');
 
 function checkColor(color) {
     if (color.length != 6) return false;
@@ -45,11 +46,33 @@ module.exports = {
             return interaction.reply({ content: `You cannot set your color as a booster.`, ephemeral: true });
         }
 
-        if (!checkColor(color)) 
+        if (!checkColor(color))
             return interaction.reply({ content: `Please enter a valid color.`, ephemeral: true });
 
         userInfo.color = color;
         userInfo = await api.updateUserByID(userInfo, discordId);
+
+        if (userInfo.error)
+            return interaction.reply({ content: `Error: ${userInfo.error}`, ephemeral: true });
+
+        // Create a 512x512 pixel canvas and get its context
+        // The context will be used to modify the canvas
+        const canvas = Canvas.createCanvas(512, 512);
+        const context = canvas.getContext('2d');
+        const background = await Canvas.loadImage('./wallpaper.jpg');
+
+        // This uses the canvas dimensions to stretch the image onto the entire canvas
+        context.drawImage(background, 0, 0, canvas.width, canvas.height);
+        // Set the color of the image to the color the user chose
+        context.fillStyle = `#${color}`;
+
+        // Use the helpful Attachment class structure to process the file for you
+        const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'color.png' });
+
+        let embed = new EmbedBuilder()
+            .setTitle(`Color Updated`)
+            .setDescription(`Your color has been updated to **#${color}**!`)
+            .setColor(color);
         return interaction.reply({ content: `Successfully updated your role to **${role[0].name}**!`, ephemeral: true });
     }
 }
