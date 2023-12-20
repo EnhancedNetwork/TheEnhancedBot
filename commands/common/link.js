@@ -28,6 +28,7 @@ module.exports = {
         const codeInput = interaction.options.getString('friendcode');
         const discordId = interaction.user.id;
         const discordName = interaction.user.username;
+        const isSponsor = interaction.member.roles.cache.has('1161429535020040282');
         let upAccess = 0;
         let devAccess = 0;
         let colorAccess = 0;
@@ -89,7 +90,11 @@ module.exports = {
             debugAccess = 1;
         }
 
-        if (role[1] === "s_bo") {
+        if (isSponsor) {
+            overhead_tag = "Sponsor";
+            color = "ff0000";
+        }
+        else if (role[1] === "s_bo") {
             overhead_tag = "Booster";
             color = "ffc0cb"
         }

@@ -19,6 +19,7 @@ module.exports = {
         .setDescription('Update your account information in our database'),
     async execute(interaction) {
         const discordId = interaction.user.id;
+        const isSponsor = interaction.member.roles.cache.has('1161429535020040282');
 
         console.log(`updatecmd - Input: ${discordId} `);
 
@@ -41,11 +42,15 @@ module.exports = {
 
             if (role[1] === 's_bo') {
                 userInfo.overhead_tag = 'Booster';
-                userInfo.color = 'ffc0cb'
+                userInfo.color = 'FFC0CB'
+            }
+            else if (isSponsor) {
+                userInfo.overhead_tag = 'Sponsor';
+                userInfo.color = 'FF0000'
             }
             else if (role[0].name.includes('Translator')) {
                 userInfo.overhead_tag = 'Translator';
-                userInfo.color = '00ff00'
+                userInfo.color = '00FF00'
             }
             else if (role[1] === 's_cr') {
                 userInfo.isUP = 1;
