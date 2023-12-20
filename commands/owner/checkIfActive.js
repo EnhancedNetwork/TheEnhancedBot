@@ -30,10 +30,10 @@ module.exports = {
 
         for (const user of userInfo) {
             interaction.guild.members.fetch();
-            console.log(interaction.guild.members.cache.size)
             const member = await interaction.guild.members.fetch(user.userID).catch(() => {
                 notFoundUsers.push(user.userID);
             });
+            if (!member) continue;
 
             // Boosters
             if (user.type == 's_bo' && member.roles.resolve('1100778961795039292')) {
