@@ -9,6 +9,16 @@ function checkColor(color) {
     return true;
 }
 
+function checkRole(member) {
+    for (const categoryKey in types) {
+        const category = types[categoryKey];
+        for (const roleKey in category) {
+            const hasRole = member.roles.cache.has(category[roleKey].roleID);
+            if (hasRole) return [category[roleKey], roleKey];
+        }
+    }
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setcolor')
@@ -16,7 +26,6 @@ module.exports = {
         .addStringOption(option => option.setName('color').setDescription('The color you want to set').setRequired(true)),
     async execute(interaction) {
         const discordId = interaction.user.id;
-        const isSponsor = interaction.member.roles.cache.has('1161429535020040282');
         const color = interaction.options.getString('color');
 
         console.log(`setcolor - Input: ${discordId} | ${color} `);
