@@ -14,7 +14,7 @@ module.exports = {
 
         let userInfo = await api.getAllRoleUsers();
         let inactiveUsers = [];
-        
+
         let boosters = [];
 
         let insiders = [];
@@ -31,12 +31,12 @@ module.exports = {
         for (const user of userInfo) {
             interaction.guild.members.fetch();
             console.log(interaction.guild.members.cache.size)
-            const member = await interaction.guild.members.fetch(user.userID);
-            if (!member) {
+            const member = await interaction.guild.members.fetch(user.userID).catch(() => {
                 notFoundUsers.push(user.userID);
-            }
+            });
+
             // Boosters
-            else if (user.type == 's_bo' && member.roles.resolve('1100778961795039292')) {
+            if (user.type == 's_bo' && member.roles.resolve('1100778961795039292')) {
                 boosters.push(user.userID);
             }
             // Insiders
