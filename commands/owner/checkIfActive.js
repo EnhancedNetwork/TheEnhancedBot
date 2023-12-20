@@ -25,6 +25,8 @@ module.exports = {
 
         let contributors = [];
         let juniorContributors = [];
+        let testers = [];
+        let translators = [];
 
         let notFoundUsers = [];
 
@@ -66,6 +68,13 @@ module.exports = {
             // Junior Contributors
             else if (user.type == 's_jc' && member.roles.resolve('1182541847449567333')) {
                 juniorContributors.push(user.userID);
+            }
+            // Testers 
+            else if (user.type == 's_tr' && member.roles.resolve('1112182767053197378')) {
+                testers.push(user.userID);
+            }
+            else if (user.type.startsWith('t_')) {
+                translators.push(user.userID);
             }
             else {
                 inactiveUsers.push(user.userID);
