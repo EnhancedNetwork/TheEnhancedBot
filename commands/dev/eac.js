@@ -70,7 +70,7 @@ module.exports = {
         const reason = interaction.options.getString('reason');
 
         if (interaction.options.getSubcommand() === 'list') {
-            let result = await api.getAllUsers();
+            let result = await api.getAllEACUsers();
             let playerEmbeds = [];
             let embed = new EmbedBuilder()
                 .setTitle("List of banned users")

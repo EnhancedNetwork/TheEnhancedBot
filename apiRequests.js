@@ -1,6 +1,15 @@
-const config = require(__dirname +'/config.json');
+const config = require(__dirname + '/config.json');
 
-async function getAllUsers() {
+async function getAllRoleUsers() {
+    const fetchURL = `http://localhost:5000/userInfo/?token=${config.utils.TOKEN}`;
+    let userInfo = await fetch(fetchURL, { method: 'GET' });
+    userInfo = await userInfo.json();
+
+    return userInfo;
+}
+
+
+async function getAllEACUsers() {
     const fetchURL = `http://localhost:5000/eac/?token=${config.utils.TOKEN}`;
     let userInfo = await fetch(fetchURL, { method: 'GET' });
     userInfo = await userInfo.json();
@@ -12,7 +21,7 @@ async function getUserByID(id) {
     const fetchURL = `http://localhost:5000/userInfo?token=${config.utils.TOKEN}&uID=${id}`;
     let userInfo = await fetch(fetchURL, { method: 'GET' });
     userInfo = await userInfo.json();
-    
+
     return userInfo;
 }
 
@@ -22,7 +31,7 @@ async function getUserByID(id) {
  * @returns {Promise} { success, error }
  */
 async function createUserByID(data) {
-    
+
     const fetchURL = `http://localhost:5000/userInfo?token=${config.utils.TOKEN}`;
     const fetchOptions = {
         method: 'POST',
@@ -44,7 +53,6 @@ async function createUserByID(data) {
  * @returns {Promise} { success, error }
  */
 async function updateUserByID(data, uID) {
-    console.log(data);
     const fetchURL = `http://localhost:5000/userInfo/?uID=${uID}&token=${config.utils.TOKEN}`;
     const fetchOptions = {
         method: 'PUT',
@@ -120,7 +128,8 @@ async function unban(data) {
 }
 
 module.exports = {
-    getAllUsers,
+    getAllRoleUsers,
+    getAllEACUsers,
     getUserByID,
     createUserByID,
     updateUserByID,
