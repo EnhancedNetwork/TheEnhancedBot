@@ -77,7 +77,7 @@ module.exports = {
                 translators.push(user.userID);
             }
             else {
-                inactiveUsers.push(user.userID);
+                inactiveUsers.push(`<@${user.userID}>`);
             }
         }
 
