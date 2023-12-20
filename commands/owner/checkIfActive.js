@@ -30,6 +30,8 @@ module.exports = {
 
         let notFoundUsers = [];
 
+        console.log(`Erase Inactive: ${userInfo.length} users found`);
+
         for (const user of userInfo) {
             interaction.guild.members.fetch();
             const member = await interaction.guild.members.fetch(user.userID).catch(() => {
@@ -84,19 +86,9 @@ module.exports = {
                 inactiveUsers.push(`<@${user.userID}>`);
             }
         }
+        let total = boosters.length + insiders.length + specialists.length + maestros.length + technicians.length + guardians.length + contributors.length + juniorContributors.length + testers.length + translators.length + notFoundUsers.length + inactiveUsers.length;
 
-        console.log(`Erase Inactive: ${boosters.toString()} boosters found`);
-        console.log(`Erase Inactive: ${insiders.toString()} insiders found`);
-        console.log(`Erase Inactive: ${specialists.toString()} specialists found`);
-        console.log(`Erase Inactive: ${maestros.toString()} maestros found`);
-        console.log(`Erase Inactive: ${technicians.toString()} technicians found`);
-        console.log(`Erase Inactive: ${guardians.toString()} guardians found`);
-        console.log(`Erase Inactive: ${contributors.toString()} contributors found`);
-        console.log(`Erase Inactive: ${juniorContributors.toString()} junior contributors found`);
-        console.log(`Erase Inactive: ${testers.toString()} testers found`);
-        console.log(`Erase Inactive: ${translators.toString()} translators found`);
-        console.log(`Erase Inactive: ${notFoundUsers.toString()} users not found`);
-        console.log(`Erase Inactive: ${inactiveUsers.length} inactive users found`);
+        console.log(`Erase Inactive: ${total} users found in roles`);
 
         return interaction.reply({ content: `Successfully checked!`, ephemeral: true });
 
