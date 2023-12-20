@@ -45,63 +45,63 @@
   },
   "translators": {
     "t_de": {
-      "name": "German",
+      "name": "German Translator",
       "roleID": "1173005132930220162"
     },
     "t_la": {
-      "name": "Latin American",
+      "name": "Latin American Translator",
       "roleID": "1173001360313155624"
     },
     "t_es": {
-      "name": "Spanish",
+      "name": "Spanish Translator",
       "roleID": "1173001322090463232"
     },
     "t_fi": {
-      "name": "Filipino",
+      "name": "Filipino Translator",
       "roleID": "1173008451958472785"
     },
     "t_fr": {
-      "name": "French",
+      "name": "French Translator",
       "roleID": "1173001722180935702"
     },
     "t_ir": {
-      "name": "Irish",
+      "name": "Irish Translator",
       "roleID": "1173009115577057330"
     },
     "t_it": {
-      "name": "Italian",
+      "name": "Italian Translator",
       "roleID": "1173001392848371873"
     },
     "t_jp": {
-      "name": "Japanese",
+      "name": "Japanese Translator",
       "roleID": "1173001589196329030"
     },
     "t_nl": {
-      "name": "Dutch",
+      "name": "Dutch Translator",
       "roleID": "1173010280733757481"
     },
     "t_br": {
-      "name": "Brazilian",
+      "name": "Brazilian Translator",
       "roleID": "1173001657433477150"
     },
     "t_ru": {
-      "name": "Russian",
+      "name": "Russian Translator",
       "roleID": "1173001128988909599"
     },
     "t_cs": {
-      "name": "Chinese Simplified",
+      "name": "SChinese Translator",
       "roleID": "1173001285709078548"
     },
     "t_ct": {
-      "name": "Chinese Traditional",
+      "name": "TChinese Translator",
       "roleID": "1173001232445612042"
     },
     "t_ko": {
-      "name": "Korean",
+      "name": "Korean Translator",
       "roleID": "1173014875694432407"
     },
     "t_pt": {
-      "name": "Portuguese",
+      "name": "Portuguese Translator",
       "roleID": "1173015108570599526"
     }
   }

@@ -16,7 +16,13 @@ async function getUserByID(id) {
     return userInfo;
 }
 
-async function updateUserByID(data) {
+/**
+ * Create a new user in the database
+ * @param {*} data - Full data object
+ * @returns {Promise} { success, error }
+ */
+async function createUserByID(data) {
+    
     const fetchURL = `http://localhost:5000/userInfo?token=${config.utils.TOKEN}`;
     const fetchOptions = {
         method: 'POST',
@@ -29,6 +35,29 @@ async function updateUserByID(data) {
     userInfo = await userInfo.json();
 
     return userInfo.data;
+}
+
+/**
+ * Update a user's info in the database
+ * @param {*} data - Full data object
+ * @param {*} uID - Discord ID of user
+ * @returns {Promise} { success, error }
+ */
+async function updateUserByID(data, uID) {
+    console.log(data);
+    const fetchURL = `http://localhost:5000/userInfo/?uID=${uID}&token=${config.utils.TOKEN}`;
+    const fetchOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+    };
+    let userInfo = await fetch(fetchURL, fetchOptions);
+    userInfo = await userInfo.json();
+
+    console.log(`Updated user ${uID}`)
+    return userInfo;
 }
 
 async function deleteUserByID(id) {
@@ -93,6 +122,7 @@ async function unban(data) {
 module.exports = {
     getAllUsers,
     getUserByID,
+    createUserByID,
     updateUserByID,
     deleteUserByID,
     getUserByFriendCode,

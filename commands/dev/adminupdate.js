@@ -97,8 +97,8 @@ async function updateDebug(debug, user) {
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('update')
-        .setDescription('Update a database entry for a user')
+        .setName('adminupdate')
+        .setDescription('Update a database entry for a user (Admin Only)')
         .addUserOption(option => option.setName('user').setDescription('The user to update').setRequired(true))
         .addStringOption(option => option.setName('overhead_tag').setDescription('The tag to set for the user'))
         .addStringOption(option => option.setName('color').setDescription('The color to set for the user'))

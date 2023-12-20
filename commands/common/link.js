@@ -32,6 +32,9 @@ module.exports = {
         let devAccess = 0;
         let colorAccess = 0;
         let debugAccess = 0;
+        let overhead_tag = null;
+        let color = null;
+
         console.log(`-----------------------\nlinkcmd: Received by ${discordId}`);
 
         const role = checkRole(interaction.member);
@@ -86,13 +89,18 @@ module.exports = {
             debugAccess = 1;
         }
 
-        api.updateUserByID({
+        if (role[1] === "s_bo") {
+            overhead_tag = "Booster";
+            color = "ffc0cb"
+        }
+
+        api.createUserByID({
             userID: discordId,
             type: role[1],
             friendcode: codeInput,
             name: discordName,
-            overhead_tag: null,
-            color: null,
+            overhead_tag: overhead_tag,
+            color: color,
             isUP: upAccess,
             isDev: devAccess,
             colorCmd: colorAccess,
