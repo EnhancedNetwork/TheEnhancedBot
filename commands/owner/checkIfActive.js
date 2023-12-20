@@ -41,6 +41,10 @@ module.exports = {
             if (user.type == 's_bo' && member.roles.resolve('1100778961795039292')) {
                 boosters.push(user.userID);
             }
+            // Initiates
+            else if (user.type == 's_it' && member.roles.resolve('1160995901184168036')) {
+                insiders.push(user.userID);
+            }
             // Insiders
             else if (user.type == 's_in' && member.roles.resolve('1160996676731932803')) {
                 insiders.push(user.userID);
