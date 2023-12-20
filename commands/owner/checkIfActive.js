@@ -85,18 +85,18 @@ module.exports = {
             }
         }
 
-        console.log(`Erase Inactive: ${boosters.length} boosters found`);
-        console.log(`Erase Inactive: ${insiders.length} insiders found`);
-        console.log(`Erase Inactive: ${specialists.length} specialists found`);
-        console.log(`Erase Inactive: ${maestros.length} maestros found`);
-        console.log(`Erase Inactive: ${technicians.length} technicians found`);
-        console.log(`Erase Inactive: ${guardians.length} guardians found`);
-        console.log(`Erase Inactive: ${contributors.length} contributors found`);
-        console.log(`Erase Inactive: ${juniorContributors.length} junior contributors found`);
-        console.log(`Erase Inactive: ${testers.length} testers found`);
-        console.log(`Erase Inactive: ${translators.length} translators found`);
-        console.log(`Erase Inactive: ${notFoundUsers.length} users not found`);
-        console.log(`Erase Inactive: ${inactiveUsers.toString()} inactive users found`);
+        console.log(`Erase Inactive: ${boosters.toString()} boosters found`);
+        console.log(`Erase Inactive: ${insiders.toString()} insiders found`);
+        console.log(`Erase Inactive: ${specialists.toString()} specialists found`);
+        console.log(`Erase Inactive: ${maestros.toString()} maestros found`);
+        console.log(`Erase Inactive: ${technicians.toString()} technicians found`);
+        console.log(`Erase Inactive: ${guardians.toString()} guardians found`);
+        console.log(`Erase Inactive: ${contributors.toString()} contributors found`);
+        console.log(`Erase Inactive: ${juniorContributors.toString()} junior contributors found`);
+        console.log(`Erase Inactive: ${testers.toString()} testers found`);
+        console.log(`Erase Inactive: ${translators.toString()} translators found`);
+        console.log(`Erase Inactive: ${notFoundUsers.toString()} users not found`);
+        console.log(`Erase Inactive: ${inactiveUsers.length} inactive users found`);
 
         return interaction.reply({ content: `Successfully checked!`, ephemeral: true });
 
