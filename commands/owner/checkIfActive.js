@@ -90,6 +90,8 @@ module.exports = {
         console.log(`Erase Inactive: ${guardians.length} guardians found`);
         console.log(`Erase Inactive: ${contributors.length} contributors found`);
         console.log(`Erase Inactive: ${juniorContributors.length} junior contributors found`);
+        console.log(`Erase Inactive: ${testers.length} testers found`);
+        console.log(`Erase Inactive: ${translators.length} translators found`);
         console.log(`Erase Inactive: ${notFoundUsers.length} users not found`);
 
         return interaction.reply({ content: `Successfully checked!`, ephemeral: true });
