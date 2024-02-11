@@ -251,6 +251,7 @@ module.exports = {
         }
         else if (subcommand === 'redeem') {
             let currentPoints = await api.getReferralByUserID(interaction.user.id);
+            console.log(currentPoints)
             if (currentPoints.error)
                 return interaction.reply({ content: `Error: ${currentPoints.error}`, ephemeral: true })
                     .then(() => console.log(`referralcode-redeem: Error: ${currentPoints.error}`))
