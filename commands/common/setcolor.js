@@ -55,20 +55,14 @@ module.exports = {
         if (userInfo.error)
             return interaction.reply({ content: `Error: ${userInfo.error}`, ephemeral: true });
 
-        // Create a 512x512 pixel canvas and get its context
-        // The context will be used to modify the canvas
         const canvas = Canvas.createCanvas(512, 512);
         const context = canvas.getContext('2d');
         const background = await Canvas.loadImage('./Images/Color.png');
 
-        // This uses the canvas dimensions to stretch the image onto the entire canvas
         context.drawImage(background, 0, 0, canvas.width, canvas.height);
-        // Set the color of the image to the color the user chose
         context.fillStyle = `#${color}`;
-        // Draw a rectangle with the color
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Use the helpful Attachment class structure to process the file for you
         const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'Color.png' });
 
         let embed = new EmbedBuilder()
