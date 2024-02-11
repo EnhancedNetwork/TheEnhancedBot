@@ -49,7 +49,10 @@ module.exports = {
                 .addChoices(
                     { name: 'Points', value: 'points' },
                     { name: 'Uses', value: 'uses' }
-                ))),
+                )))
+        .addSubcommand(subcommand => subcommand // View Redemption Values
+            .setName('redeem')
+            .setDescription('View the redemption values for referral codes')),
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
         if (subcommand === 'submit') {
@@ -245,6 +248,36 @@ module.exports = {
             return interaction.reply({ embeds: [leaderboardEmbed], ephemeral: true })
                 .then(() => console.log(`referralcode-leaderboard: Complete for ${interaction.member.id}`))
                 .catch(`referralcode-leaderboard: Error: Could not reply to user`);
+        }
+        else if (subcommand === 'redeem') {
+            let currentPoints = await api.getReferralByUserID(interaction.user.id);
+            if (currentPoints.error)
+                return interaction.reply({ content: `Error: ${currentPoints.error}`, ephemeral: true })
+                    .then(() => console.log(`referralcode-redeem: Error: ${currentPoints.error}`))
+                    .catch(`referralcode-redeem: Error: ${currentPoints.error} | Could not reply to user`);
+            if (!currentPoints.code)
+                return interaction.reply({ content: `You do not have a referral code.`, ephemeral: true })
+                    .then(() => console.log(`referralcode-redeem: User does not have a referral code`))
+                    .catch(`referralcode-redeem: Error: User does not have a referral code | Could not reply to user`);
+
+            let redeemEmbed = new EmbedBuilder()
+                .setTitle('Referral Code Redemption Values')
+                .setColor(interaction.member.displayColor)
+                .addFields(
+                    { name: 'Points:', value: `${currentPoints.points}` || '0', inline: true },
+                    { name: 'Uses:', value: `${currentPoints.uses}` || '0', inline: true },
+                    { name: '5 Points - $5 Rebate', value: '$1 per point', inline: true },
+                    { name: '13 Points - $15 Rebate', value: '$1.15 per point', inline: true },
+                    { name: '21 Points - $25 Rebate', value: '$1.19 per point', inline: true },
+                    { name: '41 Points - $50 Rebate', value: '$1.22 per point', inline: true },
+                    { name: '80 Points - $100 Rebate', value: '$1.25 per point', inline: true }
+                )
+                .setDescription('You can redeem your points for a rebate on your next donation. The more points you have, the more you save!' +
+                '\n\nTo redeem your points, please contact a staff member.');
+
+            return interaction.reply({ embeds: [redeemEmbed], ephemeral: true })
+                .then(() => console.log(`referralcode-redeem: Complete for ${interaction.member.id}`))
+                .catch(`referralcode-redeem: Error: Could not reply to user`);
         }
     }
 }
