@@ -164,15 +164,13 @@ module.exports = {
                     .then(() => console.log(`referralcode-check: Error: ${refCode.error}`))
                     .catch(`referralcode-check: Error: ${refCode.error} | Could not reply to user`);
 
-            const userRefInfo = refCode[0];
-
             let userRefEmbed = new EmbedBuilder()
                 .setTitle('Referral Code Information')
                 .setColor(interaction.member.displayColor)
                 .addFields(
-                    { name: 'Your Code:', value: `${userRefInfo.code}`, inline: true },
-                    { name: 'Points:', value: `${userRefInfo.points}` || '0', inline: true },
-                    { name: 'Uses:', value: `${userRefInfo.uses}` || '0', inline: true }
+                    { name: 'Your Code:', value: `${refCode.code}`, inline: true },
+                    { name: 'Points:', value: `${refCode.points}` || '0', inline: true },
+                    { name: 'Uses:', value: `${refCode.uses}` || '0', inline: true }
                 );
 
             return interaction.reply({ embeds: [userRefEmbed], ephemeral: true })
