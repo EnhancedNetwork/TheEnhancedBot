@@ -17,7 +17,8 @@ module.exports = {
         const logChannel = interaction.guild.channels.resolve('1109933749329731679');
         const time = Math.round(interaction.createdTimestamp / 1000);
 
-        if (!loventinesChannel) return interaction.reply({ content: `The loventines channel is not set! Please contact Moe.`, ephemeral: true });
+        if (!loventinesChannel)
+            return interaction.reply({ content: `The loventines channel is not set! Please contact Moe.`, ephemeral: true });
 
         let admireEmbed = new EmbedBuilder()
             .setColor(interaction.member.displayHexColor)
@@ -27,14 +28,20 @@ module.exports = {
 
         if (isAnon) {
             admireEmbed.setDescription(`**Someone admires ${user}! Here's what they said about them.**\n\n${admiration}`);
-            interaction.reply({ content: `Your admiration has been sent. **They don't know it was you.**`, ephemeral: true });
+            interaction.reply({ content: `Your admiration has been sent. **They don't know it was you.**`, ephemeral: true })
+                .then(() => console.log(`admirer: replied that admiration was sent anonymously`))
+                .catch(console.error);
         }
         else if (!isAnon) {
             admireEmbed.setDescription(`**${interaction.user} admires ${user}! Here's what they said about them.**\n\n${admiration}`);
-            interaction.reply({ content: `Your admiration has been sent. **They know it was you.**`, ephemeral: true });
+            interaction.reply({ content: `Your admiration has been sent. **They know it was you.**`, ephemeral: true })
+                .then(() => console.log(`admirer: replied that admiration was sent non-anonymously`))
+                .catch(console.error);
         }
 
         loventinesChannel.send({ embeds: [admireEmbed], content: `${user}` })
+            .then(() => console.log(`admire: sent the admiration`))
+            .catch(console.error);
 
         let logEmbed = new EmbedBuilder()
             .setAuthor({ name: `Logged a new Loventines Admiration`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
@@ -45,7 +52,9 @@ module.exports = {
                 { name: `Content:`, value: admiration }
             ])
             .setFooter({ text: `By: TOHE`, iconURL: interaction.guild.iconURL({ dynamic: true }) })
-        logChannel.send({ embeds: [logEmbed] });
+        logChannel.send({ embeds: [logEmbed] })
+            .then(() => console.log(`admire: logged the admiration`))
+            .catch(console.error);
         console.log(`${interaction.user.id} used the loventines command. They said it towards ${user.id} and the message said ${admiration}`);
     },
 };
