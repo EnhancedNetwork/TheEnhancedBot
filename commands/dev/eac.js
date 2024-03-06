@@ -100,7 +100,6 @@ module.exports = {
             playerEmbeds.push(embed);
             return interaction.reply({ embeds: playerEmbeds, ephemeral: true });
         }
-
         if (interaction.options.getSubcommand() === 'search') {
             if (!friendCode && !hashPUID)
                 return interaction.reply({ content: "You must provide at least one of the following: friend code, hash PUID", ephemeral: true });
@@ -136,7 +135,11 @@ module.exports = {
             if (!result)
                 return interaction.reply({ content: "No user found with that friend code or hash PUID", ephemeral: true });
 
-            result = await api.unban({ friendcode: friendCode ? friendCode.replace('#', '%23') : null, hashPUID: result.hashPUID });
+            result = await api.unban({
+                friendcode: friendCode ? friendCode.replace('#', '%23') : null,
+                hashPUID: result.hashPUID ? result.hashPUID : null
+            });
+            console.log(result);
             if (result.message !== "User removed successfully")
                 return interaction.reply({ content: "Error: " + result.message, ephemeral: true });
             else

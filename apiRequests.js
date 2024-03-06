@@ -202,7 +202,7 @@ async function getReferralByCode(code) {
         let userInfo = await fetch(fetchURL, { method: 'GET' });
         userInfo = await userInfo.json();
 
-        return userInfo[0];
+        return userInfo;
     } catch (error) {
         console.log(error);
         return { error: error };
@@ -220,7 +220,7 @@ async function getReferralByUserID(id) {
         let userInfo = await fetch(fetchURL, { method: 'GET' });
         userInfo = await userInfo.json();
 
-        return userInfo[0];
+        return userInfo;
     } catch (error) {
         console.log(error);
         return { error: error };
