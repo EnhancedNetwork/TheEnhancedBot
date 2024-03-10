@@ -254,6 +254,8 @@ module.exports = {
                 return interaction.reply({ content: `Error: ${currentPoints.error}`, ephemeral: true })
                     .then(() => console.log(`referralcode-redeem: Error: ${currentPoints.error}`))
                     .catch(`referralcode-redeem: Error: ${currentPoints.error} | Could not reply to user`);
+
+            currentPoints = currentPoints[0];
             if (!currentPoints.code)
                 return interaction.reply({ content: `You do not have a referral code.`, ephemeral: true })
                     .then(() => console.log(`referralcode-redeem: User does not have a referral code`))
