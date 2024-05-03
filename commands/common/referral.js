@@ -85,7 +85,9 @@ module.exports = {
                 return interaction.reply({ content: `You may only submit a referral code if you have been donating for less than 7 days.`, ephemeral: true });
 
             // Check if the referral code is valid and not expired
-            const refCode = await api.getReferralByCode(referralCode);
+            const refQuery = await api.getReferralByCode(referralCode);
+            const refCode = refQuery[0];
+            console.log(refCode);
             if (!refCode)
                 return interaction.reply({ content: `The referral code you entered is invalid.`, ephemeral: true })
                     .then(() => console.log(`referralcode-submit: Invalid referral code`))
