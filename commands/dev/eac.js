@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { pagination, ButtonTypes, ButtonStyles } = require('@devraelfreeze/discordjs-pagination');
 const config = require('../../config.json');
 const api = require('../../apiRequests.js');
 
@@ -88,7 +89,7 @@ module.exports = {
                         inline: true
                     }
                 );
-                if (i % 24 === 0 && i !== 0) {
+                if (i % 8 === 0 && i !== 0) {
                     playerEmbeds.push(embed);
                     embed = new EmbedBuilder()
                         .setTitle("List of banned users")
@@ -98,7 +99,33 @@ module.exports = {
                 }
             }
             playerEmbeds.push(embed);
-            return interaction.reply({ embeds: playerEmbeds, ephemeral: true });
+            // interaction.reply({ embeds: [playerEmbeds[0]], ephemeral: true });
+            await pagination({
+                interaction: interaction,
+                embeds: playerEmbeds,
+                author: interaction.member.user,
+                time: 60000,
+                fastSkip: false,
+                disableButtons: true,
+                pageTravel: false,
+                customFilter: (i) => {
+                  return i.member.user.id === interaction.member.user.id;
+                },
+                buttons: [
+                  {
+                    type: ButtonTypes.previous,
+                    label: 'Previous Page',
+                    style: ButtonStyles.Success,
+                    emoji: '◀️'
+                  },
+                  {
+                    type: ButtonTypes.next,
+                    label: 'Next Page',
+                    style: ButtonStyles.Success,
+                    emoji: '▶️'
+                  }
+                ]
+              });
         }
         if (interaction.options.getSubcommand() === 'search') {
             if (!friendCode && !hashPUID)
