@@ -104,6 +104,7 @@ module.exports = {
                 interaction: interaction,
                 embeds: playerEmbeds,
                 author: interaction.member.user,
+                ephemeral: true,
                 time: 60000,
                 fastSkip: false,
                 disableButtons: true,
