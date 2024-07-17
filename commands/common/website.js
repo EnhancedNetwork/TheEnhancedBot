@@ -13,11 +13,11 @@ module.exports = {
             .setDescription("This is the official website for Town of Host: Enhanced.\nHere you can find the latest news, roles, and more!")
             .setFooter({ text: "Town of Host: Enhanced", iconURL: "https://i.ibb.co/RvX9B3s/Yeetus-TOHE-Pic.png" })
             .addFields(
-                { name: "Need to Install TOHE?", value: "[Install Instructions](https://tohre.dev/GetStarted.html)", inline: true },
+                { name: "Need to Install TOHE?", value: "[Install Instructions](https://tohre.dev/Install.html)", inline: true },
                 { name: "Questions?", value: "[FAQ](https://tohre.dev/FAQ.html)", inline: true },
                 { name: "Learn About the Mod!", value: "[Roles](https://tohre.dev/Roles.html)", inline: true },
                 { name: "Learn About the Team!", value: "[About Us](https://tohre.dev/AboutUs.html)", inline: true },
-                { name: "Want to support TOHE?", value: "[Check out our Ko-Fi!](https://ko-fi.com/tohen)", inline: true }
+                { name: "Want to support TOHE?", value: "[Check out our Ko-Fi!](https://ko-fi.com/tohe)", inline: true }
             )
             .setTimestamp();
 
