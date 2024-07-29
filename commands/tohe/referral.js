@@ -213,7 +213,12 @@ module.exports = {
         }
         else if (subcommand === 'leaderboard') {
 
-            const topRef = await api.getTopReferralCodes(interaction.options.getString('sort') || 'points');
+            let sort = interaction.options.getString('sort');
+            if (sort !== 'points' && sort !== 'uses')
+                return interaction.reply({ content: `Error: Invalid sort option.`, ephemeral: true })
+                    .then(() => console.log(`referralcode-leaderboard: Invalid sort option`))
+                    .catch(`referralcode-leaderboard: Error: Invalid sort option | Could not reply to user`);
+            const topRef = await api.getTopReferralCodes(sort || 'points');
 
             if (topRef.error)
                 return interaction.reply({ content: `Error: ${topRef.error}`, ephemeral: true })
