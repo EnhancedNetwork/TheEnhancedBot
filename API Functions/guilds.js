@@ -44,6 +44,19 @@ async function getGuild(id) {
 }
 
 /**
+ * Creates a new guild using the API.
+ * 
+ * @async
+ * @function createGuild
+ * @param {Snowflake} ID - The ID of the guild to create.
+ * @returns {Promise<Object>} A promise that resolves to the response from the API, indicating success or failure.
+ */
+async function createGuild(ID) {
+    const { url } = constructURL(ENDPOINT_URL, {}, { guildID: ID });
+    return await fetchData(url, { method: 'POST' });
+}
+
+/**
  * Updates a guild by ID using the API.
  * 
  * @async
@@ -65,5 +78,6 @@ async function updateGuild(data) {
 module.exports = {
     getAllGuilds,
     getGuild,
+    createGuild,
     updateGuild
 };
