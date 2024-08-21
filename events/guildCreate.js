@@ -6,6 +6,7 @@ module.exports = {
     async execute(guild) {
         try {
             // Create a new guild in the database
+            console.log(guild.id);
             const response = await createGuild(guild.id);
 
             // Check if the response contains an error

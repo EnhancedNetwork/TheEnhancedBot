@@ -53,6 +53,7 @@ async function getGuild(id) {
  */
 async function createGuild(ID) {
     const { url } = constructURL(ENDPOINT_URL, {}, { guildID: ID });
+    console.log(url);
     return await fetchData(url, { method: 'POST' });
 }
 
