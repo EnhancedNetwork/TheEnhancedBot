@@ -1,23 +1,12 @@
-const { EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-let { joinRole } = require('../config.json');
-
-function makeid(length) {
-    var result = ['', ''];
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
-        let letter = characters.charAt(Math.floor(Math.random() * charactersLength));
-        result[0] += letter + " ";
-        result[1] += letter;
-    }
-    return result;
-}
+const { Events, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { getUserByID, updateUserByID } = require('../API Functions/profiles');
+const { getGuild } = require('../API Functions/guilds');
+const { devIDs } = require('../config.json');
 
 module.exports = {
-    name: 'interactionCreate',
+    name: Events.InteractionCreate,
     async execute(interaction) {
-
-        if (interaction.isCommand()) {
+        if (interaction.isChatInputCommand()) {
             const command = interaction.client.commands.get(interaction.commandName);
 
             if (!command) {
@@ -25,87 +14,147 @@ module.exports = {
                 return;
             }
 
+            if (await checkPermissions(interaction, command)) return;
+
             try {
                 await command.execute(interaction);
-                return;
             } catch (error) {
+                console.error(`Error executing ${interaction.commandName}`);
                 console.error(error);
-                if (interaction.replied || interaction.deferred) {
-                    await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+            }
+        } else if (interaction.isButton()) {
+            if (interaction.customId === 'toggle_admire_opt_in')
+                return toggleAdmireOptIn(interaction);
+            if (interaction.customId === 'verification-CODE-button') {
+                const code = await generateCode(interaction); // Make sure generateCode is defined elsewhere
+
+                const responseModal = new ModalBuilder()
+                    .setCustomId('verification-CODE-modal') // Unique ID for the modal
+                    .setTitle(`Your verification code is: ${code}`) // Display the code to the user;
+
+                const codeInput = new TextInputBuilder()
+                    .setCustomId('verification-CODE-input') // Unique ID for the text input
+                    .setLabel(`Enter the code in the title above!`) // Display the code to the user
+                    .setPlaceholder('The code is cAsE sEnSiTiVe') // Placeholder text
+                    .setMinLength(6)
+                    .setMaxLength(6)
+                    .setStyle(TextInputStyle.Short);
+
+                const row = new ActionRowBuilder().addComponents(codeInput);
+                responseModal.addComponents(row);
+
+                interaction.member.code = code; // Store the code in the member object
+                await interaction.showModal(responseModal);
+            }
+            if (interaction.customId === 'verification-EMOJI-button')
+                return interaction.reply({ content: 'You selected the emoji button!', ephemeral: true });
+            if (interaction.customId === 'verification-WHY-button') {
+                const embed = new EmbedBuilder()
+                    .setTitle('Why do I need to verify?')
+                    .setDescription('Verification is required to ensure that you are a human and not a bot. This helps us prevent spam and keep the server safe for everyone.')
+                    .setColor('#0099ff')
+                    .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() })
+                    .setTimestamp()
+                    .setThumbnail(interaction.guild.iconURL())
+                    .addFields([
+                        { name: 'What happens if I don\'t verify?', value: 'You will not be able to access the server until you complete the verification process.' },
+                        { name: 'How do I verify?', value: 'Simply click one of the buttons above to start the verification process.' },
+                        { name: 'What is Captcha Code? 🔑', value: 'You will be given a 6-character alphanumeric code to enter in a box.' },
+                        { name: 'What is Captcha Emoji? 😄', value: 'You will be asked to react to a message with a specific emoji.' }
+                    ]);
+                return interaction.reply({ embeds: [embed], ephemeral: true });
+            }
+
+        } else if (interaction.isModalSubmit()) {
+            if (interaction.customId === 'verification-CODE-modal') {
+                const code = interaction.fields.getTextInputValue('verification-CODE-input');
+                const member = interaction.member;
+
+                console.log(member.code); // Log the stored code
+                if (code === member.code) {
+                    return interaction.reply({ content: 'Verification successful!', ephemeral: true });
                 } else {
-                    await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+                    return interaction.reply({ content: 'Verification failed. Please try again.', ephemeral: true });
                 }
             }
-            return;
         }
-        if (interaction.customId == 'verification-EMOJI-button') {
-            console.log("In here");
-        }
-        if (interaction.customId === 'verification-CODE-button') {
-            const code = makeid(7);
-            const row = new ActionRowBuilder().addComponents(
-                // create a discord button
-                new ButtonBuilder()
-                    .setCustomId('verification-GENERATE-button')
-                    .setLabel('Click to Submit Code to Verify you are a Human')
-                    .setEmoji({ name: '✅' })
-                    .setStyle(ButtonStyle.Danger)
-            );
+    },
+};
 
-            let embed = new EmbedBuilder()
-                .setTitle('Verification')
-                .setDescription(`Please enter the code below to verify your account.`)
-                .setAuthor({ name: interaction.user.username, url: interaction.user.avatarURL() })
-                .setColor('#0099ff')
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
-                .setTimestamp()
-                .setThumbnail(interaction.user.avatarURL())
-                .addFields({ name: 'Code', value: code[0] });
-
-            interaction.reply({ content: 'Verification Embed', embeds: [embed], components: [row], ephemeral: true });
-            interaction.member.code = code[1];
-        }
-        if (interaction.customId === 'verification-GENERATE-button') {
-            // Create our modal
-            const modal = new ModalBuilder()
-                .setCustomId('myModal')
-                .setTitle('My Modal');
-
-            // Add components to modal
-            // Let's create our text inputs
-            const codeInput = new TextInputBuilder()
-                .setCustomId('codeInput')
-                .setLabel("What is the code that is displayed?")
-                .setStyle(TextInputStyle.Short);
-
-            const firstActionRow = new ActionRowBuilder().addComponents(codeInput);
-
-            modal.addComponents(firstActionRow);
-
-            // Show our modal
-            await interaction.showModal(modal);
-        }
-        if (interaction.customId === 'verification-WHY-button') {
-            let embed = new EmbedBuilder()
-                .setTitle('Why do I need to verify?')
-                .setDescription(`Verification is required to prevent spam and bots from joining the server. This helps us keep the server clean and safe.`)
-                .setAuthor({ name: interaction.guild.name, url: interaction.guild.iconURL() })
-                .setColor('#0099ff')
-                .setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() })
-                .setTimestamp()
-                .setThumbnail(interaction.guild.iconURL());
-
-            interaction.reply({ content: 'Verification Embed', embeds: [embed], ephemeral: true });
-        }
-        if (interaction.isModalSubmit()) {
-            const codeInput = interaction.fields.getTextInputValue('codeInput');
-            console.log(`${interaction.member.id}: (0) Verify; Code: ${codeInput}`);
-            if (codeInput === interaction.member.code) {
-                interaction.member.roles.add(joinRole);
-                interaction.reply({ content: 'You have been verified!', ephemeral: true });
-            } else {
-                interaction.reply({ content: 'Incorrect code!', ephemeral: true });
-            }
+async function checkPermissions(interaction, command) {
+    if (!command.type) return false;
+    else if (command.type === 'tohe') {
+        if (interaction.user.id !== '800552171048927243') {
+            console.log(`User ${interaction.user.id} attempted to use a TOHE command in the wrong server`);
+            return interaction.reply({ content: "This command can only be used in [TOHE's Official Discord](https://discord.gg/tohe)", ephemeral: true });
         }
     }
+    else if (command.type === 'admin') {
+        const guildData = await getGuild(interaction.guildId);
+        if (!guildData || guildData.error)
+            return interaction.reply({ content: 'This server is not in the database. Please contact Moe.', ephemeral: true });
+        else if (interaction.member.permissions.has('ADMINISTRATOR'))
+            return false;
+        else if (interaction.member.roles.cache.has(guildData.adminRole))
+            return false;
+        else return interaction.reply({ content: 'You do not have permission to use this command', ephemeral: true });
+    }
+    else if (command.type === 'dev') {
+        const discordId = interaction.user.id;
+        if (!devIDs.includes(discordId)) {
+            console.log(`User ${discordId} attempted to use a dev command`);
+            return interaction.reply({ content: 'You are not allowed to use this command', ephemeral: true });
+        }
+    }
+    else if (command.type === 'owner') {
+        if (interaction.user.id !== '800552171048927243') {
+            console.log(`User ${interaction.user.id} attempted to use an owner command`);
+            return interaction.reply({ content: "You are not allowed to use this command", ephemeral: true });
+        }
+    }
+}
+
+async function toggleAdmireOptIn(interaction) {
+    const user = interaction.user;
+    const userData = await getUserByID(user.id);
+    const newAdmireOptIn = !userData.admireOptIn;
+    await updateUserByID({ admireOptIn: newAdmireOptIn }, user.id);
+
+    const message = await interaction.message.fetch();
+    const existingEmbed = message.embeds[0];
+
+    const fields = existingEmbed.fields;
+    const admireFieldIndex = fields.findIndex(field => field.name === 'Admire Opt-In');
+
+    if (admireFieldIndex !== -1) {
+        fields[admireFieldIndex].value = newAdmireOptIn ? '**Yes**' : '**No**';
+    } else {
+        fields.push({ name: 'Admire Opt-In:', value: newAdmireOptIn ? '**Yes**' : '**No**', inline: true });
+    }
+
+    const admireButton = new ButtonBuilder()
+        .setLabel('Toggle Admire Opt-In')
+        .setStyle(ButtonStyle.Primary)
+        .setCustomId('toggle_admire_opt_in');
+
+    const row = new ActionRowBuilder().addComponents(admireButton);
+
+    await interaction.update({
+        content: `Updated Admire Opt In to: **${newAdmireOptIn ? 'Yes' : 'No'}**`,
+        embeds: [existingEmbed],
+        components: [row],
+    });
+}
+
+async function generateCode(interaction) {
+    const user = interaction.user;
+    const userData = await getUserByID(user.id);
+    // Generate a random 6-character alphanumeric code
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let code = '';
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        code += characters[randomIndex];
+    }
+    return code;
 }

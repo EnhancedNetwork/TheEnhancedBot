@@ -1,10 +1,27 @@
+/**
+ * @fileoverview This module defines a Discord slash command that allows users to view the description of a role in Town of Host: Enhanced.
+ * It uses the role names from the game's JSON files to get the role descriptions in the specified language.
+ * 
+ * Dependencies:
+ * - Requires `discord.js` for building and executing Discord commands.
+ * 
+ * Constants:
+ * - None in this file directly; relies on settings from the user data.
+ * 
+ * @module profileCommand
+ * @version 2.0.0
+ * @since 2024-08-18
+ * 
+ * @author 0xDrMoe
+ */
+
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const con = require('../../mysqlConn.js');
 
 function formatRole(string) {
-    let stringArray = string.split(" ");
-    stringArray = stringArray.map(word => word.charAt(0).toUpperCase() + word.slice(1));
-    return stringArray.join(" ");
+    return string
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 }
 
 function internalNameToRoleName(gitJson) {
@@ -13,7 +30,7 @@ function internalNameToRoleName(gitJson) {
     for (const key in gitJson) {
         if (key.includes("InfoLong")) {
             const internalName = key.replace("InfoLong", "");
-            if (internalName in gitJson) {
+            if (gitJson[internalName]) {
                 result[formatRole(gitJson[internalName].toLowerCase())] = {
                     Description: gitJson[key],
                     codeName: internalName
@@ -21,87 +38,93 @@ function internalNameToRoleName(gitJson) {
             }
         }
     }
-    console.log(`rolecmd: internalNameToRoleName successfully converted ${Object.keys(result).length} InfoLongs.`);
+
+    console.log(`rolecmd: Converted ${Object.keys(result).length} InfoLongs successfully.`);
     return result;
+}
+
+async function fetchJson(url) {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch ${url}`);
+        return await response.json();
+    } catch (error) {
+        console.error(`Error fetching data from ${url}:`, error);
+        throw error;
+    }
 }
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('role')
         .setDescription('Get the description of a role in Town of Host: Enhanced')
-        .addStringOption(option => option.setName('role').setDescription('The role to get the description of').setRequired(true))
-        .addStringOption(option => option.setName('language').setDescription('The language to get the description in').setRequired(false)
-            .addChoices(
-                { name: 'English', value: 'en_US' },
-                { name: 'Latin American', value: 'es_419' },
-                { name: 'Spanish', value: 'es_ES' },
-                { name: 'French', value: 'fr_FR' },
-                { name: 'Japanese', value: 'ja_JP' },
-                { name: 'Portuguese', value: 'pt_BR' },
-                { name: 'Russian', value: 'ru_RU' },
-                { name: 'Chinese (Simplified)', value: 'zh_CN' },
-                { name: 'Chinese (Traditional)', value: 'zh_TW' }
-            )),
+        .addStringOption(option =>
+            option.setName('role')
+                .setDescription('The role to get the description of')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('language')
+                .setDescription('The language to get the description in')
+                .addChoices(
+                    { name: 'English', value: 'en_US' },
+                    { name: 'Latin American', value: 'es_419' },
+                    { name: 'Spanish', value: 'es_ES' },
+                    { name: 'French', value: 'fr_FR' },
+                    { name: 'Japanese', value: 'ja_JP' },
+                    { name: 'Portuguese', value: 'pt_BR' },
+                    { name: 'Russian', value: 'ru_RU' },
+                    { name: 'Chinese (Simplified)', value: 'zh_CN' },
+                    { name: 'Chinese (Traditional)', value: 'zh_TW' }
+                ))
+        .addBooleanOption(option =>
+            option.setName('hidden')
+                .setDescription('Whether to show the role description to other users')),
+
     async execute(interaction) {
+        try {
+            const roleInput = formatRole(interaction.options.getString('role').toLowerCase());
+            console.log(`rolecmd: Input - ${roleInput}`);
+            const langInput = interaction.options.getString('language') || "en_US";
+            console.log(`rolecmd: Language - ${langInput}`);
 
-        const roleInput = formatRole(interaction.options.getString('role').toLowerCase());
-        console.log("rolecmd: Input - " + roleInput);
-        const langInput = interaction.options.getString('language') || "en_US";
-        console.log("rolecmd: Language - " + langInput);
+            const langJson = await fetchJson(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`);
+            const lang = internalNameToRoleName(langJson);
 
-        let repoLangURL;
-        await fetch(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`)
-            .then((response) => {
-                repoLangURL = response;
-                console.log(`rolecmd: RawURL - https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`);
-            })
-            .catch(() =>
-                interaction.reply({ content: `rolecmd: The language ${langInput} does not exist.`, ephemeral: true }));
-        const langJson = await repoLangURL.json();
+            if (!lang[roleInput]) {
+                console.log(`rolecmd: Role ${roleInput} does not exist.`);
+                return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true });
+            }
 
-        const lang = internalNameToRoleName(langJson);
+            const { Description: roleInfo, codeName: roleCodeName } = lang[roleInput];
+            if (!roleInfo || !roleCodeName) {
+                console.log(`rolecmd: Role ${roleInput} has missing data.`);
+                return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true });
+            }
 
-        if (!lang[roleInput]) return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true })
-        let roleInfo = lang[roleInput].Description;
-        let roleCodeName = lang[roleInput].codeName;
+            const sliceIndex = roleInfo.indexOf(":");
+            const roleType = roleInfo.slice(1, sliceIndex - 1);
+            console.log(`rolecmd: Role Type - ${roleType}`);
 
-        if (!roleInfo || !roleCodeName) return interaction.reply({ content: `The role ${roleInput} does not exist.`, ephemeral: true })
-            .then(console.log(`rolecmd: Role ${roleInput} does not exist.`));
+            const roleColorJson = await fetchJson('https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json');
+            const roleColor = roleColorJson[roleCodeName] || "#ff1919";
 
-        const sliceIndex = roleInfo.indexOf(":");
+            const embed = new EmbedBuilder()
+                .setTitle(`${roleInput}: ${roleType}`)
+                .setDescription(roleInfo.slice(sliceIndex + 1))
+                .setColor(roleColor)
+                .setTimestamp()
+                .addFields(
+                    { name: "For more information:", value: "[Check out our Website!](https://tohe.weareten.ca/Roles.html)", inline: true },
+                    { name: "Want to support TOHE?", value: "[Check out our Subscriptions!](https://weareten.ca/tohe)", inline: true }
+                )
+                .setFooter({ text: "TOHE by The Enhanced Network", iconURL: "https://i.ibb.co/RvX9B3s/Yeetus-TOHE-Pic.png" });
 
-        // Extract role type from the roleInfo
-        const roleType = roleInfo.slice(1, sliceIndex - 1);
-        console.log("rolecmd: Role Type - " + roleType);
-
-        // role colors
-        let roleColorURL;
-        await fetch(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json`)
-            .then((response) => {
-                roleColorURL = response;
-                console.log('roleColor: RawURL - https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/roleColor.json');
-            })
-            .catch(() =>
-                interaction.reply({ content: `roleColor URL invalid`, ephemeral: true }));
-        const roleColorJson = await roleColorURL.json();
-        let roleColor = "#ff1919";
-        if (roleCodeName in roleColorJson) roleColor = roleColorJson[roleCodeName];
-
-        // Extract role description from the roleInfo
-        roleInfo = roleInfo.slice(sliceIndex + 1);
-        console.log("rolecmd - Role Description: " + roleInfo);
-
-        const embed = new EmbedBuilder()
-            .setTitle(roleInput + ": " + roleType)
-            .setDescription(roleInfo)
-            .setColor(roleColor)
-            .setTimestamp()
-            .addFields(
-                { name: "For more information:", value: "[Check out our Website!](https://tohre.dev/Roles.html)", inline: true },
-                { name: "Want to support TOHE?", value: "[Check out our Ko-Fi!](https://ko-fi.com/tohen)", inline: true }
-            )
-            .setFooter({ text: "Town of Host: Enhanced", iconURL: "https://i.ibb.co/RvX9B3s/Yeetus-TOHE-Pic.png" });
-
-        interaction.reply({ embeds: [embed] }).then(console.log(`rolecmd: Sent by ${interaction.member.id}\n-----------------------`));
+            const hidden = interaction.options.getBoolean('hidden') ?? true;
+            await interaction.reply({ embeds: [embed], ephemeral: hidden });
+            console.log(`rolecmd: Sent by ${interaction.member.id}\n-----------------------`);
+        } catch (error) {
+            console.error('rolecmd: Error executing command:', error);
+            await interaction.reply({ content: 'An error occurred while processing your request. Please try again later.', ephemeral: true });
+        }
     }
-}
+};

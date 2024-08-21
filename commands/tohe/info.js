@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { readFileSync } = require('fs');
 const types = JSON.parse(readFileSync('./roleTypes.json'));
-const api = require('../../apiRequests.js');
+const { getUserByID } = require(__dirname + '/../../API Functions/userinfo.js');
 
 function checkRole(type) {
     for (const categoryKey in types) {
@@ -15,15 +15,16 @@ function checkRole(type) {
 }
 
 module.exports = {
+    type: 'tohe',
     data: new SlashCommandBuilder()
         .setName('info')
         .setDescription('Get info about your current linked account'),
     async execute(interaction) {
         console.log(`-----------------------\ninfocmd: Received by ${interaction.member.id}`);
         const discordId = interaction.user.id;
-        let userInfo = await api.getUserByID(discordId);
+        let userInfo = await getUserByID(discordId);
 
-        if (userInfo.error === `No user found with that ID`) {
+        if (userInfo.error) {
             console.log(`infocmd: Command Cancelled ${userInfo.error}\n-----------------------`);
             return interaction.reply({ content: "You do not have an account linked. Please link your account first.", ephemeral: true });
         }

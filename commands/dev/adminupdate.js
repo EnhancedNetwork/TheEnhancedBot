@@ -1,101 +1,49 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+// This command is used to update a user's database entry with new information. This is an admin only command.
+const { SlashCommandBuilder } = require('discord.js');
 const { devIDs } = require('../../config.json');
-const con = require('../../mysqlConn.js');
+const { updateUserByID, getUserByID } = require('../../API Functions/userinfo.js');
 
-async function updateOverheadTag(tag, user) {
+async function updateUserRole(type, value, user) {
+    let updateData = {};
+    let responseMessage = '';
+
+    switch (type) {
+        case 'tag':
+            if (value.length > 50) return `**Overhead Tag too long (50 character limit):** \`${value}\`\n`;
+            if (value.length < 1) return `**Overhead Tag too short (1 character minimum):** \`${value}\`\n`;
+            updateData.overhead_tag = value;
+            break;
+        case 'color':
+            if (value.length !== 6 || !value.match(/^[0-9a-fA-F]+$/)) return `**Invalid color, please use a 6 digit hex code WITHOUT the # (e.g. FF0000):** \`${value}\`\n`;
+            updateData.color = value.toUpperCase();
+            break;
+        case 'isUp':
+        case 'isDev':
+        case 'colorCmd':
+        case 'debug':
+            updateData[type] = value ? 1 : 0;
+            break;
+        default:
+            return `**Invalid update type:** \`${type}\`\n`;
+    }
+
     try {
-        if (tag.length > 50) {
-            console.log(`updatecmd - Overhead tag too long: ${tag}`);
-            return `**Overhead Tag too long (50 character limit):** \`${tag}\`\n`;
+        const response = await updateUserByID(updateData, user.id);
+        if (response.error) {
+            responseMessage = `**Error updating ${type}:** \`${response.error}\`\n`;
+        } else {
+            responseMessage = `**Updated ${type}:** \`${value}\`\n`;
         }
-        else if (tag.length < 1) {
-            console.log(`updatecmd - Overhead tag too short: ${tag}`);
-            return `**Overhead Tag too short (1 character minimum):** \`${tag}\`\n`;
-        }
-        else {
-            await con.check(`UPDATE role_table SET overhead_tag = '${tag}' WHERE userID = '${user.id}'`);
-            console.log(`updatecmd - Updated overhead_tag: ${tag}`);
-            return `**Updated Overhead Tag:** \`${tag}\`\n`;
-        }
     } catch (err) {
-        console.log(`updatecmd - Error updating overhead_tag for ${user.id}: ${err}`);
-        return `**Error updating Overhead Tag:** \`${err}\`\n`;
+        console.log(`updatecmd - Error updating ${type} for ${user.id}: ${err}`);
+        responseMessage = `**Error updating ${type}:** \`${err}\`\n`;
     }
-}
 
-async function updateColor(color, user) {
-    try {
-        if (color.length != 6 || !color.match(/^[0-9a-fA-F]+$/))
-            return `**Invalid color, please use a 6 digit hex code WITHOUT the # (e.g. FF0000):** \`${color}\`\n`;
-        else {
-            color = color.toUpperCase();
-            await con.check(`UPDATE role_table SET color = '${color}' WHERE userID = '${user.id}'`);
-            console.log(`updatecmd - Updated color: ${color}`);
-            return `**Updated Color:** \`${color}\`\n`;
-        }
-    } catch (err) {
-        console.log(`updatecmd - Error updating color: ${color}`);
-        return `**Error updating Color:** \`${err}\`\n`;
-    }
-}
-
-async function updateUp(up, user) {
-    let bool = up;
-    if (up == true) bool = 1;
-    else if (up == false) bool = 0;
-    try {
-        await con.check(`UPDATE role_table SET isUp = '${bool}' WHERE userID = '${user.id}'`);
-        console.log(`updatecmd - Updated isUp: ${bool}`);
-        return `**Updated Up Access:** \`${up}\`\n`;
-    } catch (err) {
-        console.log(`updatecmd - Error updating isUp: ${up}`);
-        return `**Error updating Up Access:** \`${err}\`\n`;
-    }
-}
-
-async function updateDev(dev, user) {
-    let bool = dev;
-    if (dev == true) bool = 1;
-    else if (dev == false) bool = 0;
-    try {
-        await con.check(`UPDATE role_table SET isDev = '${bool}' WHERE userID = '${user.id}'`);
-        console.log(`updatecmd - Updated isDev: ${dev}`);
-        return `**Updated Dev Access:** \`${dev}\`\n`;
-    } catch (err) {
-        console.log(`updatecmd - Error updating isDev: ${dev}`);
-        return `**Error updating Dev Access:** \`${err}\`\n`;
-    }
-}
-
-async function updateColorCmd(colorcmd, user) {
-    let bool = colorcmd;
-    if (colorcmd == true) bool = 1;
-    else if (colorcmd == false) bool = 0;
-    try {
-        await con.check(`UPDATE role_table SET colorCmd = '${bool}' WHERE userID = '${user.id}'`);
-        console.log(`updatecmd - Updated colorCmd: ${colorcmd}`);
-        return `**Updated colorCmd:** \`${colorcmd}\`\n`;
-    } catch (err) {
-        console.log(`updatecmd - Error updating colorCmd: ${colorcmd}`);
-        return `**Error updating colorCmd:** \`${err}\`\n`;
-    }
-}
-
-async function updateDebug(debug, user) {
-    let bool = debug;
-    if (debug == true) bool = 1;
-    else if (debug == false) bool = 0;
-    try {
-        await con.check(`UPDATE role_table SET debug = '${bool}' WHERE userID = '${user.id}'`);
-        console.log(`updatecmd - Updated debug: ${debug}`);
-        return `**Updated debug:** \`${debug}\`\n`;
-    } catch (err) {
-        console.log(`updatecmd - Error updating debug: ${debug}`);
-        return `**Error updating debug:** \`${err}\`\n`;
-    }
+    return responseMessage;
 }
 
 module.exports = {
+    type: 'dev',
     data: new SlashCommandBuilder()
         .setName('adminupdate')
         .setDescription('Update a database entry for a user (Admin Only)')
@@ -106,35 +54,34 @@ module.exports = {
         .addBooleanOption(option => option.setName('dev').setDescription('Whether or not the user has dev access'))
         .addBooleanOption(option => option.setName('colorcmd').setDescription('Whether or not the user has color command access'))
         .addBooleanOption(option => option.setName('debug').setDescription('Whether or not the user has debug access')),
+
     async execute(interaction) {
         const discordId = interaction.user.id;
-        const user = interaction.options.getMember('user');
-        const overhead_tag = interaction.options.getString('overhead_tag');
-        const color = interaction.options.getString('color');
-        let up = interaction.options.getBoolean('up');
-        let dev = interaction.options.getBoolean('dev');
-        let colorcmd = interaction.options.getBoolean('colorcmd');
-        let debug = interaction.options.getBoolean('debug');
-
-        console.log(`updatecmd - Input: ${user.id} | ${overhead_tag} | ${color} | ${up} | ${dev} | ${colorcmd} | ${debug}`);
-
         if (!devIDs.includes(discordId))
             return interaction.reply({ content: "You are not allowed to use this command", ephemeral: true });
 
-        let userInfo = await con.check(`SELECT * FROM role_table WHERE userID = '${user.id}'`);
-        if (!userInfo[0])
-            return interaction.reply({ content: "This user does not have an account linked. Please have them link their account first.", ephemeral: true });
-        userInfo = userInfo[0];
-        let finalResult = "";
+        const user = interaction.options.getMember('user');
+        const overhead_tag = interaction.options.getString('overhead_tag');
+        const color = interaction.options.getString('color');
+        const up = interaction.options.getBoolean('up');
+        const dev = interaction.options.getBoolean('dev');
+        const colorcmd = interaction.options.getBoolean('colorcmd');
+        const debug = interaction.options.getBoolean('debug');
 
-        if (overhead_tag) finalResult += await updateOverheadTag(overhead_tag, user);
-        if (color) finalResult += await updateColor(color, user);
-        if (up == true || up == false) finalResult += await updateUp(up, user);
-        if (dev == true || dev == false) finalResult += await updateDev(dev, user);
-        if (colorcmd == true || colorcmd == false) finalResult += await updateColorCmd(colorcmd, user);
-        if (debug == true || debug == false) finalResult += await updateDebug(debug, user);
+        console.log(`updatecmd - Input: ${user.id} | ${overhead_tag} | ${color} | ${up} | ${dev} | ${colorcmd} | ${debug}`);
+
+        let userInfo = await getUserByID(user.id);
+        if (!userInfo || userInfo.error)
+            return interaction.reply({ content: "This user does not have an account linked. Please have them link their account first.", ephemeral: true });
+
+        let finalResult = "";
+        if (overhead_tag) finalResult += await updateUserRole('tag', overhead_tag, user);
+        if (color) finalResult += await updateUserRole('color', color, user);
+        if (up !== null) finalResult += await updateUserRole('isUp', up, user);
+        if (dev !== null) finalResult += await updateUserRole('isDev', dev, user);
+        if (colorcmd !== null) finalResult += await updateUserRole('colorCmd', colorcmd, user);
+        if (debug !== null) finalResult += await updateUserRole('debug', debug, user);
 
         return interaction.reply({ content: `Successfully updated ${user}!\n${finalResult}`, ephemeral: true });
-
     }
-}
+};

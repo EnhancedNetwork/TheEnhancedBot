@@ -1,18 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { devIDs } = require(__dirname + '/../../config.json');
-const api = require('../../apiRequests.js');
+const { getAllRoleUsers } = require(__dirname + '/../../API Functions/userinfo.js');
 
 module.exports = {
+    type: 'owner',
     data: new SlashCommandBuilder()
         .setName('eraseinactive')
         .setDescription('Remove inactive users from the database'),
     async execute(interaction) {
-        const discordId = interaction.user.id;
-
-        if (!devIDs.includes(discordId))
-            return interaction.reply({ content: "You are not allowed to use this command", ephemeral: true });
-
-        let userInfo = await api.getAllRoleUsers();
+        let userInfo = await getAllRoleUsers();
         let inactiveUsers = [];
 
         let boosters = [];
