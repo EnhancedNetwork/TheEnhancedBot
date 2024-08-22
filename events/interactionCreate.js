@@ -125,7 +125,7 @@ async function toggleAdmireOptIn(interaction) {
         const existingEmbed = message.embeds[0];
 
         const fields = existingEmbed.fields;
-        const admireFieldIndex = fields.findIndex(field => field.name === 'Admire Opt-In');
+        const admireFieldIndex = fields.findIndex(field => field.name === 'Admire Opt-In:');
 
         if (admireFieldIndex !== -1) {
             // Update the existing field
