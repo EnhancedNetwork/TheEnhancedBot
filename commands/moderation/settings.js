@@ -68,9 +68,12 @@ async function viewSettings(interaction, guildData) {
 
     Object.entries(guildData).forEach(([key, value]) => {
         if (!['ID', 'guildID'].includes(key)) {
+            const { stringified } = checkInput(interaction, key, value);
+            let formattedValue = stringified
+            if (stringified === '0') formattedValue = 'No';
             settingsEmbed.addFields({
                 name: formatKey(key),
-                value: checkInput(interaction, key, value).stringified || 'Not set',
+                value: checkInput(interaction, key, value).stringified,
                 inline: true
             });
         }
@@ -108,13 +111,16 @@ function checkInput(interaction, setting, value) {
     const { guild } = interaction;
     const isRole = setting.toLowerCase().includes('role');
     const isChannel = setting.toLowerCase().includes('channel');
+    const isBoolean = value === '0' || value === '1';
 
     if (isRole && guild.roles.cache.has(value)) {
         return { stringified: `<@&${value}>`, valid: true };
     } else if (isChannel && guild.channels.cache.has(value)) {
         return { stringified: `<#${value}>`, valid: true };
+    } else if (value === NULL) {
+        return { stringified: 'Not set', valid: true };
     } else {
-        return { stringified: value, valid: false };
+        return { stringified: `${value}`, valid: false };
     }
 }
 

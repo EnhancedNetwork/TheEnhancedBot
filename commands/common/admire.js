@@ -1,21 +1,4 @@
-/**
- * @fileoverview This module defines a Discord slash command that allows users to anonymously or non-anonymously 
- * admire someone within a guild. The command sends the admiration to a designated channel and logs the interaction.
- * 
- * Dependencies:
- * - Requires `discord.js` for building and executing Discord commands.
- * - Requires custom functions `getGuild` and `getUserByID` from the API Functions for guild and user data.
- * 
- * Constants:
- * - None in this file directly; relies on settings from the guild and user data.
- * 
- * @module admireCommand
- * @version 2.0.0
- * @since 2024-08-18
- * 
- * @author 0xDrMoe
- */
-const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { getGuild } = require('../../API Functions/guilds');
 const { getUserByID } = require('../../API Functions/profiles');
 
@@ -45,6 +28,7 @@ module.exports = {
                 }).then(() => console.log('admire: guild settings not set up'))
                     .catch(error => console.error(`admire: ${error}`));
             }
+
             const user = interaction.options.getUser('target');
             const admiration = interaction.options.getString('message');
             const isAnon = interaction.options.getBoolean('anonymous');
@@ -61,8 +45,10 @@ module.exports = {
             }
 
             if (!interaction.member.roles.cache.has(settings.admireRole)) {
-                return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true })
-                    .then(() => console.log('admire: user does not have permission'))
+                return await interaction.reply({
+                    content: 'You do not have permission to use this command.',
+                    ephemeral: true,
+                }).then(() => console.log('admire: user does not have permission'))
                     .catch(error => console.error(`admire: ${error}`));
             }
 
@@ -84,27 +70,52 @@ module.exports = {
             }
 
             const admireEmbed = createAdmireEmbed(interaction, user, admiration, isAnon);
-            await admireChannel.send({ embeds: [admireEmbed], content: `${user}` })
-                .then(() =>
-                    console.log('admire: sent the admiration'))
-                .catch(error =>
-                    interaction.reply({
-                        content: `An error occurred while processing your admiration. Please try again later. 
-                    If the issue persists, please join our support server.`, ephemeral: true
-                    }).then(() => console.error(`admire: ${error}`)));
-
             const logEmbed = createLogEmbed(interaction, user, admiration, time);
-            await logChannel.send({ embeds: [logEmbed] }).then(() =>
-                console.log('admire: logged the admiration'))
-                .catch(error => console.error(`admire: ${error}`));
 
-            await interaction.reply({
-                content: isAnon
-                    ? `Your admiration has been sent. **They don't know it was you.**`
-                    : `Your admiration has been sent. **They know it was you.**`,
-                ephemeral: true,
-            }).then(() => console.log('admire: replied to the user'))
-                .catch(error => console.error(`admire: ${error}`));
+            if (settings.admireVerifyByStaff) {
+                // Send the admiration to the log channel for verification
+                const approveButton = new ButtonBuilder()
+                    .setCustomId('approve_admire')
+                    .setLabel('Approve')
+                    .setStyle(ButtonStyle.Success);
+
+                const denyButton = new ButtonBuilder()
+                    .setCustomId('deny_admire')
+                    .setLabel('Deny')
+                    .setStyle(ButtonStyle.Danger);
+
+                const row = new ActionRowBuilder().addComponents(approveButton, denyButton);
+
+                await logChannel.send({
+                    content: `New admiration awaiting approval:`,
+                    embeds: [logEmbed],
+                    components: [row],
+                }).then(() => console.log('admire: sent to log channel for approval'))
+                    .catch(error => console.error(`admire: ${error}`));
+
+                await interaction.reply({
+                    content: 'Your admiration is awaiting staff approval.',
+                    ephemeral: true,
+                }).then(() => console.log('admire: informed user of pending approval'))
+                    .catch(error => console.error(`admire: ${error}`));
+            } else {
+                // Directly send the admiration to the admire channel
+                await admireChannel.send({ embeds: [admireEmbed], content: `${user}` })
+                    .then(() => console.log('admire: sent the admiration'))
+                    .catch(error => console.error(`admire: ${error}`));
+
+                await logChannel.send({ embeds: [logEmbed] })
+                    .then(() => console.log('admire: logged the admiration'))
+                    .catch(error => console.error(`admire: ${error}`));
+
+                await interaction.reply({
+                    content: isAnon
+                        ? `Your admiration has been sent. **They don't know it was you.**`
+                        : `Your admiration has been sent. **They know it was you.**`,
+                    ephemeral: true,
+                }).then(() => console.log('admire: replied to the user'))
+                    .catch(error => console.error(`admire: ${error}`));
+            }
 
             console.log(`admire: ${interaction.user.tag} admired ${user.tag} at ${time}`);
         } catch (error) {
