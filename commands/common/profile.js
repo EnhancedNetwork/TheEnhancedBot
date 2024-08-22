@@ -29,7 +29,7 @@ module.exports = {
 
     async execute(interaction) {
         const member = interaction.options.getMember('user') || interaction.member;
-        const memberData = await getUserByID(member.id);
+        let memberData = await getUserByID(member.id);
 
         if (memberData.error) {
             console.error(`profile: failed to get user data for ${member.tag}`);
@@ -37,7 +37,7 @@ module.exports = {
         }
 
         if (memberData.result === 'No user found with that ID') {
-            await createUserByID({ userID: member.id }, member.id);
+            memberData = await createUserByID({ userID: member.id, admireOptIn: 1 }, member.id);
         }
 
         let profileEmbed = new EmbedBuilder()
