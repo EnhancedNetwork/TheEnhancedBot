@@ -83,6 +83,7 @@ module.exports = {
 
 async function checkPermissions(interaction, command) {
     if (!command.type) return false;
+    else if (devIDs.includes(interaction.user.id)) return false;
     else if (command.type === 'tohe') {
         if (interaction.user.id !== '800552171048927243') {
             console.log(`User ${interaction.user.id} attempted to use a TOHE command in the wrong server`);
@@ -93,7 +94,7 @@ async function checkPermissions(interaction, command) {
         const guildData = await getGuild(interaction.guildId);
         if (!guildData || guildData.error)
             return interaction.reply({ content: 'This server is not in the database. Please contact Moe.', ephemeral: true });
-        else if (interaction.member.permissions.has('ADMINISTRATOR'))
+        else if (interaction.member.permissions.has('Administrator'))
             return false;
         else if (interaction.member.roles.cache.has(guildData.adminRole))
             return false;
