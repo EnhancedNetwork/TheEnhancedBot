@@ -115,35 +115,40 @@ async function checkPermissions(interaction, command) {
 }
 
 async function toggleAdmireOptIn(interaction) {
-    const user = interaction.user;
-    const userData = await getUserByID(user.id);
-    const newAdmireOptIn = !userData.admireOptIn;
-    await updateUserByID({ admireOptIn: newAdmireOptIn }, user.id);
+    try {
+        const user = interaction.user;
+        const userData = await getUserByID(user.id);
+        const newAdmireOptIn = !userData.admireOptIn;
+        await updateUserByID({ admireOptIn: newAdmireOptIn }, user.id);
 
-    const message = await interaction.message.fetch();
-    const existingEmbed = message.embeds[0];
+        const message = interaction.message;
+        const existingEmbed = message.embeds[0];
 
-    const fields = existingEmbed.fields;
-    const admireFieldIndex = fields.findIndex(field => field.name === 'Admire Opt-In');
+        const fields = existingEmbed.fields;
+        const admireFieldIndex = fields.findIndex(field => field.name === 'Admire Opt-In');
 
-    if (admireFieldIndex !== -1) {
-        fields[admireFieldIndex].value = newAdmireOptIn ? '**Yes**' : '**No**';
-    } else {
-        fields.push({ name: 'Admire Opt-In:', value: newAdmireOptIn ? '**Yes**' : '**No**', inline: true });
+        if (admireFieldIndex !== -1) {
+            fields[admireFieldIndex].value = newAdmireOptIn ? '**Yes**' : '**No**';
+        } else {
+            fields.push({ name: 'Admire Opt-In:', value: newAdmireOptIn ? '**Yes**' : '**No**', inline: true });
+        }
+
+        const admireButton = new ButtonBuilder()
+            .setLabel('Toggle Admire Opt-In')
+            .setStyle(ButtonStyle.Primary)
+            .setCustomId('toggle_admire_opt_in');
+
+        const row = new ActionRowBuilder().addComponents(admireButton);
+
+        await interaction.update({
+            content: `Updated Admire Opt In to: **${newAdmireOptIn ? 'Yes' : 'No'}**`,
+            embeds: [existingEmbed],
+            components: [row],
+        });
+    } catch (error) {
+        console.error('Error toggling Admire Opt-In:', error);
+        await interaction.reply({ content: 'There was an error while toggling Admire Opt-In. Please try again later.', ephemeral: true });
     }
-
-    const admireButton = new ButtonBuilder()
-        .setLabel('Toggle Admire Opt-In')
-        .setStyle(ButtonStyle.Primary)
-        .setCustomId('toggle_admire_opt_in');
-
-    const row = new ActionRowBuilder().addComponents(admireButton);
-
-    await interaction.update({
-        content: `Updated Admire Opt In to: **${newAdmireOptIn ? 'Yes' : 'No'}**`,
-        embeds: [existingEmbed],
-        components: [row],
-    });
 }
 
 async function generateCode(interaction) {
