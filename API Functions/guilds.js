@@ -52,9 +52,14 @@ async function getGuild(id) {
  * @returns {Promise<Object>} A promise that resolves to the response from the API, indicating success or failure.
  */
 async function createGuild(ID) {
-    const { url } = constructURL(ENDPOINT_URL, {}, { guildID: ID });
-    console.log(url);
-    return await fetchData(url, { method: 'POST' });
+    console.log('Creating guild with ID:', ID);
+    const { url, body } = constructURL(ENDPOINT_URL, {}, { guildID: ID });
+    const options = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: body
+    };
+    return await fetchData(url, options);
 }
 
 /**
