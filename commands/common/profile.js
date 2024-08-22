@@ -93,7 +93,6 @@ async function getTitle(member) {
 
 async function getRoles(member) {
     const memberRoles = member.roles.cache.sort((a, b) => b.position - a.position).map(r => r.name);
-    console.log(memberRoles);
     const joinedRoles = memberRoles.join(', ');
 
     if (joinedRoles.length >= 1024) {
