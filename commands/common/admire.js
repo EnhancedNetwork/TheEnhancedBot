@@ -54,7 +54,7 @@ module.exports = {
 
             if (!admireChannel) {
                 return await interaction.reply({
-                    content: 'The admire channel is not set up. Please contact Moe to set it up.',
+                    content: 'The admire channel is not set up. Please contact a server manager.',
                     ephemeral: true,
                 }).then(() => console.log('admire: admire channel not set up'))
                     .catch(error => console.error(`admire: ${error}`));
