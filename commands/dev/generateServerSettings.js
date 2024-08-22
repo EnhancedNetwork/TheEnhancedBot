@@ -34,6 +34,7 @@ module.exports = {
             console.log(`Guilds created: ${guildsCreated}`);
             console.log(`Guilds failed: ${guildsFailed}`);
             console.log(`Guild invites fetched: ${guildInviteCount}`);
+            interaction.reply({ content: `Guilds created: ${guildsCreated}\nGuilds failed: ${guildsFailed}\nGuild invites fetched: ${guildInviteCount}`, ephemeral: true });
         } catch (error) {
             
         }
