@@ -25,20 +25,7 @@ module.exports = {
         } else if (interaction.isButton()) {
             if (interaction.customId === 'toggle_admire_opt_in')
                 return toggleAdmireOptIn(interaction);
-            if (interaction.customId === 'approve_admire') {
-                const admireChannel = interaction.guild.channels.resolve(settings.admireChannel);
-                await admireChannel.send({ embeds: [embed], content: userField })
-                    .then(() => console.log('admire: admiration approved and sent'))
-                    .catch(error => console.error(`admire: ${error}`));
-        
-                const row = createDisabledButtons();
-                await interaction.update({ content: 'Admiration approved and sent!', components: [row] });
-            } 
-            else if (interaction.customId === 'deny_admire') {
-                const row = createDisabledButtons();
-                await interaction.update({ content: 'Admiration denied.', components: [row] });
-            }
-            else if (interaction.customId === 'verification-CODE-button') {
+            if (interaction.customId === 'verification-CODE-button') {
                 const code = await generateCode(interaction); // Make sure generateCode is defined elsewhere
 
                 const responseModal = new ModalBuilder()
@@ -59,9 +46,9 @@ module.exports = {
                 interaction.member.code = code; // Store the code in the member object
                 await interaction.showModal(responseModal);
             }
-            else if (interaction.customId === 'verification-EMOJI-button')
+            if (interaction.customId === 'verification-EMOJI-button')
                 return interaction.reply({ content: 'You selected the emoji button!', ephemeral: true });
-            else if (interaction.customId === 'verification-WHY-button') {
+            if (interaction.customId === 'verification-WHY-button') {
                 const embed = new EmbedBuilder()
                     .setTitle('Why do I need to verify?')
                     .setDescription('Verification is required to ensure that you are a human and not a bot. This helps us prevent spam and keep the server safe for everyone.')
@@ -179,20 +166,4 @@ async function generateCode(interaction) {
         code += characters[randomIndex];
     }
     return code;
-}
-
-function createDisabledButtons() {
-    const approveButton = new ButtonBuilder()
-        .setCustomId('approve_admire')
-        .setLabel('Approve')
-        .setStyle(ButtonStyle.Success)
-        .setDisabled(true);
-
-    const denyButton = new ButtonBuilder()
-        .setCustomId('deny_admire')
-        .setLabel('Deny')
-        .setStyle(ButtonStyle.Danger)
-        .setDisabled(true);
-
-    return new ActionRowBuilder().addComponents(approveButton, denyButton);
 }

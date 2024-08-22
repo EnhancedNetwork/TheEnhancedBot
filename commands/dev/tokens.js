@@ -52,7 +52,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Token Information')
-                .setDescription(`**Token ID:** ${response.ID}\n**Owner ID:** ${response.ownerID}\n**Token:** ${response.token}\n**Active:** ${response.active}`)
+                .setDescription(`**Token ID:** ${response.ID}\n**Owner ID:** ${response.ownerID}\n**Token:** ${response.token}`)
                 .setColor('Green');
             return interaction.reply({ embeds: [embed], ephemeral: true });
         } else if (subcommand === 'regenerate') {
