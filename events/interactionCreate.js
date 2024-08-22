@@ -128,9 +128,12 @@ async function toggleAdmireOptIn(interaction) {
         const admireFieldIndex = fields.findIndex(field => field.name === 'Admire Opt-In');
 
         if (admireFieldIndex !== -1) {
+            // Update the existing field
             fields[admireFieldIndex].value = newAdmireOptIn ? '**Yes**' : '**No**';
         } else {
-            fields.push({ name: 'Admire Opt-In:', value: newAdmireOptIn ? '**Yes**' : '**No**', inline: true });
+            // If the field somehow doesn't exist, you can choose to log an error or handle it accordingly
+            console.error('Admire Opt-In field not found in the embed.');
+            return interaction.reply({ content: 'There was an issue updating the Admire Opt-In status.', ephemeral: true });
         }
 
         const admireButton = new ButtonBuilder()
