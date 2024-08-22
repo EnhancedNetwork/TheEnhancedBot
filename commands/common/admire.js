@@ -60,6 +60,12 @@ module.exports = {
                     .catch(error => console.error(`admire: ${error}`));
             }
 
+            if (!interaction.member.roles.cache.has(settings.admireRole)) {
+                return await interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true })
+                    .then(() => console.log('admire: user does not have permission'))
+                    .catch(error => console.error(`admire: ${error}`));
+            }
+
             const userSettings = await getUserByID(user.id);
             if (!userSettings.result && !userSettings.admireOptIn) {
                 return await interaction.reply({
