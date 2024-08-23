@@ -1,7 +1,7 @@
 const { Events, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 const { getUserByID, updateUserByID } = require('../API Functions/profiles');
 const { getGuild } = require('../API Functions/guilds');
-const { devIDs } = require('../config.json');
+const { devIDs, devServerID } = require('../config.json');
 
 module.exports = {
     name: Events.InteractionCreate,
@@ -85,7 +85,7 @@ async function checkPermissions(interaction, command) {
     if (!command.type) return false;
     else if (devIDs.includes(interaction.user.id)) return false;
     else if (command.type === 'tohe') {
-        if (interaction.user.id !== '800552171048927243') {
+        if (interaction.guildId !== devServerID) {
             console.log(`User ${interaction.user.id} attempted to use a TOHE command in the wrong server`);
             return interaction.reply({ content: "This command can only be used in [TOHE's Official Discord](https://discord.gg/tohe)", ephemeral: true });
         }
