@@ -100,6 +100,16 @@ async function checkPermissions(interaction, command) {
             return false;
         else return interaction.reply({ content: 'You do not have permission to use this command', ephemeral: true });
     }
+    else if (command.type === 'mod') {
+        const guildData = await getGuild(interaction.guildId);
+        if (!guildData || guildData.error)
+            return interaction.reply({ content: 'This server is not in the database. Please contact Moe.', ephemeral: true });
+        else if (interaction.member.permissions.has('Administrator'))
+            return false;
+        else if (interaction.member.roles.cache.has(guildData.modRole))
+            return false;
+        else return interaction.reply({ content: 'You do not have permission to use this command', ephemeral: true });
+    }
     else if (command.type === 'dev') {
         const discordId = interaction.user.id;
         if (!devIDs.includes(discordId)) {
