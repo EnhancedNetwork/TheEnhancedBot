@@ -24,6 +24,7 @@ module.exports = {
             .catch(console.error);
 
         // Log the command usage in a separate channel
+        const guildData = await getGuild(interaction.guildId);
         const logChannel = interaction.guild.channels.cache.get(guildData.sayLogChannel);
         if (!logChannel)
             return console.error('say.js: Log channel not found');
