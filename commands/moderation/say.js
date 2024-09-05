@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { getGuild } = require('../../API Functions/guilds')
 
 module.exports = {
     type: 'mod',
