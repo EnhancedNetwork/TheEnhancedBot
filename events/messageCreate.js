@@ -1,13 +1,12 @@
-const { Events, PermissionsBitField } = require('discord.js');
+const { Events } = require('discord.js');
 const { getGuild } = require('../API Functions/guilds');
 
 module.exports = {
     name: Events.MessageCreate,
     once: false,
     async execute(message) {
-        if (message.author.bot) return;
+        if (message.author.bot) return; // Ignore bot messages
 
-        // Fetch the guild settings
         const guild = await getGuild(message.guild.id);
 
         // If the message is in the counting channel
@@ -15,9 +14,11 @@ module.exports = {
             // If the member is in the blacklist role, delete the message
             if (message.member.roles.cache.has(guild.countingBlacklistRole)) return message.delete();
 
-            // Fetch the last two messages from the channel (the current message and the last valid message)
-            const messages = await message.channel.messages.fetch({ limit: 2 });
-            const lastMessage = messages.last();
+            // Fetch the last two messages, excluding the bot's messages
+            const messages = await message.channel.messages.fetch({ limit: 5 });
+            const lastMessage = messages
+                .filter(msg => !msg.author.bot) // Exclude bot messages
+                .last(); // Get the last valid user message
 
             // Check if the last message content is a valid number
             const lastNumber = parseInt(lastMessage.content);
