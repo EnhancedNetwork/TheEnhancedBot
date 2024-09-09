@@ -44,6 +44,10 @@ module.exports = {
                     return message.channel.send(`${message.author} did not count correctly! The next number should've been ${lastNumber + 1}. Please start over from 1.`);
                 }
 
+                if (lastMessage.author.id === message.author.id) {
+                    return message.channel.send(`${message.author}, did not count correctly! You cannot count twice in a row. Please start over from 1.`);
+                }
+
                 // If counting is correct, react with a checkmark
                 message.react('✅');
 
