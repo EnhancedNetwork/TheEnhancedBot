@@ -22,25 +22,25 @@ module.exports = {
                 const validMessages = messages.filter(msg => !msg.author.bot);
                 const lastMessage = validMessages.first(); // The most recent valid user message before the current one
 
+                // Check if the last bot message indicates a reset was required (due to a previous failure)
+                const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('Please start over from 1'));
+
+                // If the last bot message is a failure message, enforce a reset and check if the current message is "1"
+                if (lastBotMessage) {
+                    if (parseInt(message.content) !== 1) {
+                        return message.channel.send(`${message.author}, the counting has been reset. Please start from 1.`);
+                    }
+                    // If the user correctly starts at 1, react and allow counting to proceed
+                    message.react('✅');
+                    return;
+                }
+
                 // If no previous valid messages exist, expect the counting to start at 1
                 if (!lastMessage) {
                     if (parseInt(message.content) === 1) {
                         message.react('✅');
                     } else {
                         return message.channel.send(`${message.author}, the counting should start at 1.`);
-                    }
-                    return;
-                }
-
-                // Check for any bot messages indicating a counting failure
-                const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
-
-                // Only reset the counting if the last bot message is very recent (i.e., within the last message or two)
-                if (lastBotMessage && lastBotMessage.id === validMessages.last()?.id) {
-                    if (parseInt(message.content) === 1) {
-                        message.react('✅');
-                    } else {
-                        return message.channel.send(`${message.author}, the counting has been reset. Please start from 1.`);
                     }
                     return;
                 }
