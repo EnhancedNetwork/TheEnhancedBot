@@ -59,7 +59,7 @@ module.exports = {
 
                 // Check if the current message is the correct next number
                 if (currentNumber !== lastNumber + 1) {
-                    return message.channel.send(`${message.author}, the next number should be ${lastNumber + 1}.`);
+                    return message.channel.send(`${message.author} did not count correctly! The next number should be ${lastNumber + 1}.`);
                 }
 
                 // React with a checkmark if the counting is correct
