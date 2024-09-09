@@ -26,7 +26,7 @@ module.exports = {
                 const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
 
                 // If a reset was enforced by the bot, the next message must be "1"
-                if (lastBotMessage && parseInt(message.content) == 1) {
+                if (lastBotMessage && parseInt(message.content) == 1 && reset) {
                     message.react('✅');
                     return;
                 }
@@ -41,10 +41,12 @@ module.exports = {
 
                 // Check if the current message is the correct next number in the sequence
                 if (currentNumber !== lastNumber + 1) {
+                    reset = true;
                     return message.channel.send(`${message.author} did not count correctly! The next number should've been ${lastNumber + 1}. Please start over from 1.`);
                 }
 
                 if (lastMessage.author.id === message.author.id) {
+                    reset = true;
                     return message.channel.send(`${message.author}, did not count correctly! You cannot count twice in a row. Please start over from 1.`);
                 }
 
