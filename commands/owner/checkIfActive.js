@@ -8,6 +8,7 @@ module.exports = {
         .setName('eraseinactive')
         .setDescription('Remove inactive users from the database'),
     async execute(interaction) {
+        interaction.deferReply({ ephemeral: true });
         let userInfo = await getAllRoleUsers();
         let inactiveUsers = [];
 
@@ -86,7 +87,6 @@ module.exports = {
 
         console.log(`Erase Inactive: ${total} users found in roles`);
 
-        return interaction.reply({ content: `Successfully checked!`, ephemeral: true });
-
+        return interaction.editReply({ content: `**Boosters (${boosters.length})**\n${boosters.join(', ')}\n\n**Insiders (${insiders.length})**\n${insiders.join(', ')}\n\n**Specialists (${specialists.length})**\n${specialists.join(', ')}\n\n**Maestros (${maestros.length})**\n${maestros.join(', ')}\n\n**Technicians (${technicians.length})**\n${technicians.join(', ')}\n\n**Guardians (${guardians.length})**\n${guardians.join(', ')}\n\n**Contributors (${contributors.length})**\n${contributors.join(', ')}\n\n**Junior Contributors (${juniorContributors.length})**\n${juniorContributors.join(', ')}\n\n**Testers (${testers.length})**\n${testers}` });
     }
 }
