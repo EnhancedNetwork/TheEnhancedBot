@@ -27,15 +27,11 @@ module.exports = {
 
                 // If the last bot message indicates failure, the next message should start at 1
                 if (lastBotMessage) {
-                    const currentNumber = parseInt(message.content);
-
-                    // If the user message is not 1 after failure, reset the count
-                    if (currentNumber !== 1) {
-                        return message.channel.send(`${message.author}, the counting has reset. Please start from 1.`);
+                    if (parseInt(message.content) === 1) {
+                        message.react('✅');
+                    } else {
+                        return message.channel.send(`${message.author}, the counting should start at 1.`);
                     }
-
-                    // If the user starts from 1 correctly, react and proceed
-                    message.react('✅');
                     return;
                 }
 
@@ -52,18 +48,18 @@ module.exports = {
                 // Check if the last message content is a valid number
                 const lastNumber = parseInt(lastMessage.content);
                 if (isNaN(lastNumber)) {
-                    return message.channel.send('The last counted message was not a valid number. Please restart the counting from 1.');
+                    return message.channel.send(`${message.author}, the last message was not a valid number! Please continue with the correct number.`);
                 }
 
                 // Parse the current message content as a number
                 const currentNumber = parseInt(message.content);
                 if (isNaN(currentNumber)) {
-                    return message.channel.send(`${message.author}, your message is not a valid number! Please continue with the correct number.`);
+                    return message.channel.send(`${message.author}, please only count with numbers!`);
                 }
 
                 // Check if the current message is the correct next number
                 if (currentNumber !== lastNumber + 1) {
-                    return message.channel.send(`${message.author} did not count correctly! The next number should've been ${lastNumber + 1}. Shame, shame, shame!`);
+                    return message.channel.send(`${message.author}, the next number should be ${lastNumber + 1}.`);
                 }
 
                 // React with a checkmark if the counting is correct
