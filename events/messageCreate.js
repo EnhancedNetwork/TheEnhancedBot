@@ -14,16 +14,26 @@ module.exports = {
             // If the member is in the blacklist role, delete the message
             if (message.member.roles.cache.has(guild.countingBlacklistRole)) return message.delete();
 
-            // Fetch the last two messages, excluding the bot's messages
+            // Fetch the last few messages, excluding bot messages
             const messages = await message.channel.messages.fetch({ limit: 5 });
-            const lastMessage = messages
-                .filter(msg => !msg.author.bot) // Exclude bot messages
-                .last(); // Get the last valid user message
+            const validMessages = messages.filter(msg => !msg.author.bot);
+
+            let lastMessage = validMessages.last();
+
+            // If there are no valid messages, initialize the count with 1
+            if (!lastMessage) {
+                if (parseInt(message.content) === 1) {
+                    message.react('✅');
+                } else {
+                    return message.channel.send(`${message.author}, the counting should start at 1.`);
+                }
+                return;
+            }
 
             // Check if the last message content is a valid number
             const lastNumber = parseInt(lastMessage.content);
             if (isNaN(lastNumber)) {
-                return message.channel.send('The last counted message was not a valid number. Please restart the counting.');
+                return message.channel.send('The last counted message was not a valid number. Please restart the counting from 1.');
             }
 
             // Parse the current message content as a number
