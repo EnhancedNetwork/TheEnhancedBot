@@ -22,20 +22,7 @@ module.exports = {
                 const validMessages = messages.filter(msg => !msg.author.bot);
                 const lastMessage = validMessages.first(); // The most recent valid user message before the current one
 
-                // Check for any bot messages indicating a counting failure
-                const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
-
-                // If the last bot message indicates failure, the next message should start at 1
-                if (lastBotMessage) {
-                    if (parseInt(message.content) === 1) {
-                        message.react('✅');
-                    } else {
-                        return message.channel.send(`${message.author}, the counting should start at 1.`);
-                    }
-                    return;
-                }
-
-                // If no previous valid messages exist, expect the current message to be 1
+                // If no previous valid messages exist, expect the counting to start at 1
                 if (!lastMessage) {
                     if (parseInt(message.content) === 1) {
                         message.react('✅');
@@ -45,10 +32,23 @@ module.exports = {
                     return;
                 }
 
-                // Check if the last message content is a valid number
+                // Check for any bot messages indicating a counting failure
+                const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
+
+                // If there was a failure message, the next valid count should be 1
+                if (lastBotMessage) {
+                    if (parseInt(message.content) === 1) {
+                        message.react('✅');
+                    } else {
+                        return message.channel.send(`${message.author}, the counting has been reset. Please start from 1.`);
+                    }
+                    return;
+                }
+
+                // Check if the last user message content is a valid number
                 const lastNumber = parseInt(lastMessage.content);
                 if (isNaN(lastNumber)) {
-                    return message.channel.send(`${message.author}, the last message was not a valid number! Please continue with the correct number.`);
+                    return message.channel.send(`${message.author}, the last message was not a valid number! Please start the counting over from 1.`);
                 }
 
                 // Parse the current message content as a number
@@ -57,13 +57,12 @@ module.exports = {
                     return message.channel.send(`${message.author}, please only count with numbers!`);
                 }
 
-                // Check if the current message is the correct next number
+                // Check if the current message is the correct next number in the sequence
                 if (currentNumber !== lastNumber + 1) {
-                    return message.channel.send(`${message.author} did not count correctly! The next number should've been ${lastNumber + 1}. 
-                        Please start over from 1.`);
+                    return message.channel.send(`${message.author} did not count correctly! The next number should've been ${lastNumber + 1}. Please start over from 1.`);
                 }
 
-                // React with a checkmark if the counting is correct
+                // If counting is correct, react with a checkmark
                 message.react('✅');
             } catch (error) {
                 console.error('Error processing message:', error);
