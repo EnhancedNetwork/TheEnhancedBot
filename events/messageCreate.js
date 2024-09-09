@@ -35,8 +35,8 @@ module.exports = {
                 // Check for any bot messages indicating a counting failure
                 const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
 
-                // If there was a failure message, the next valid count should be 1
-                if (lastBotMessage) {
+                // Only reset the counting if the last bot message is very recent (i.e., within the last message or two)
+                if (lastBotMessage && lastBotMessage.id === validMessages.last()?.id) {
                     if (parseInt(message.content) === 1) {
                         message.react('✅');
                     } else {
