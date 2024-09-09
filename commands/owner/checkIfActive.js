@@ -37,43 +37,43 @@ module.exports = {
             if (!member) continue;
 
             // Boosters
-            if (user.type == 's_bo' && member.roles.resolve('1100778961795039292')) {
+            if (user.type == 's_bo' && !member.roles.resolve('1100778961795039292')) {
                 boosters.push(`<@${user.userID}>`);
             }
             // Initiates
-            else if (user.type == 's_it' && member.roles.resolve('1160995901184168036')) {
+            else if (user.type == 's_it' && !member.roles.resolve('1160995901184168036')) {
                 insiders.push(`<@${user.userID}>`);
             }
             // Insiders
-            else if (user.type == 's_in' && member.roles.resolve('1160996676731932803')) {
+            else if (user.type == 's_in' && !member.roles.resolve('1160996676731932803')) {
                 insiders.push(`<@${user.userID}>`);
             }
             // Specialists
-            else if (user.type == 's_sp' && member.roles.resolve('1160998162832576552')) {
+            else if (user.type == 's_sp' && !member.roles.resolve('1160998162832576552')) {
                 specialists.push(`<@${user.userID}>`);
             }
             // Maestros
-            else if (user.type == 's_ms' && member.roles.resolve('1160998207954886817')) {
+            else if (user.type == 's_ms' && !member.roles.resolve('1160998207954886817')) {
                 maestros.push(`<@${user.userID}>`);
             }
             // Technicians
-            else if (user.type == 's_te' && member.roles.resolve('1160998239332474882')) {
+            else if (user.type == 's_te' && !member.roles.resolve('1160998239332474882')) {
                 technicians.push(`<@${user.userID}>`);
             }
             // Guardians
-            else if (user.type == 's_gd' && member.roles.resolve('1160998302767136798')) {
+            else if (user.type == 's_gd' && !member.roles.resolve('1160998302767136798')) {
                 guardians.push(`<@${user.userID}>`);
             }
             // Contributors
-            else if (user.type == 's_cr' && member.roles.resolve('1096793713453314098')) {
+            else if (user.type == 's_cr' && !member.roles.resolve('1096793713453314098')) {
                 contributors.push(`<@${user.userID}>`);
             }
             // Junior Contributors
-            else if (user.type == 's_jc' && member.roles.resolve('1182541847449567333')) {
+            else if (user.type == 's_jc' && !member.roles.resolve('1182541847449567333')) {
                 juniorContributors.push(`<@${user.userID}>`);
             }
             // Testers 
-            else if (user.type == 's_tr' && member.roles.resolve('1112182767053197378')) {
+            else if (user.type == 's_tr' && !member.roles.resolve('1112182767053197378')) {
                 testers.push(`<@${user.userID}>`);
             }
             else if (user.type.startsWith('t_')) {
