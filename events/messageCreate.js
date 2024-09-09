@@ -14,13 +14,31 @@ module.exports = {
             // If the member is in the blacklist role, delete the message
             if (message.member.roles.cache.has(guild.countingBlacklistRole)) return message.delete();
 
-            // Fetch the last few messages, excluding bot messages
+            // Fetch the last few messages, including both bot and user messages
             const messages = await message.channel.messages.fetch({ limit: 5 });
+
+            // Check for any bot messages indicating a counting failure
+            const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
+
+            // If the last bot message indicates failure, the next message should start at 1
+            if (lastBotMessage) {
+                const currentNumber = parseInt(message.content);
+
+                // If the user message is not 1 after failure, reset the count
+                if (currentNumber !== 1) {
+                    return message.channel.send(`${message.author}, the counting has reset. Please start from 1.`);
+                }
+
+                // If the user starts from 1 correctly, react and proceed
+                message.react('✅');
+                return;
+            }
+
+            // Otherwise, get the last valid user message
             const validMessages = messages.filter(msg => !msg.author.bot);
+            const lastMessage = validMessages.last();
 
-            let lastMessage = validMessages.last();
-
-            // If there are no valid messages, initialize the count with 1
+            // If no previous messages exist, expect the current message to be 1
             if (!lastMessage) {
                 if (parseInt(message.content) === 1) {
                     message.react('✅');
