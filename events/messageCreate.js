@@ -1,5 +1,6 @@
 const { Events } = require('discord.js');
 const { getGuild } = require('../API Functions/guilds');
+const reset = false;
 
 module.exports = {
     name: Events.MessageCreate,
@@ -9,55 +10,37 @@ module.exports = {
 
         const guild = await getGuild(message.guild.id);
 
-        // If the message is in the counting channel
         if (guild.countingChannel === message.channel.id) {
-            // If the member is in the blacklist role, delete the message
             if (message.member.roles.cache.has(guild.countingBlacklistRole)) return message.delete();
 
             try {
-                // Fetch messages BEFORE the current message to avoid including the current message in the check
-                const messages = await message.channel.messages.fetch({ limit: 10, before: message.id });
-
-                // Filter out bot messages and only consider user messages
+                const messages = await message.channel.messages.fetch({ limit: 2, before: message.id });
+                messages.forEach(element => {
+                    console.log(element.content);
+                });
+                console.log('---');
                 const validMessages = messages.filter(msg => !msg.author.bot);
+                if (validMessages.size === 0) return; // No valid user messages before the current one
+
                 const lastMessage = validMessages.first(); // The most recent valid user message before the current one
-
-                // Track if a reset has been enforced
-                let resetEnforced = false;
-
-                // Check if the last bot message indicates a reset was required (due to a previous failure)
-                const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('Please start over from 1'));
+                const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
 
                 // If a reset was enforced by the bot, the next message must be "1"
-                if (lastBotMessage && parseInt(message.content) !== 1) {
-                    return message.channel.send(`${message.author}, the counting has been reset. Please start from 1.`);
-                }
-
-                // If no previous valid messages exist, expect the counting to start at 1
-                if (!lastMessage) {
-                    if (parseInt(message.content) === 1) {
-                        message.react('✅');
-                    } else {
-                        return message.channel.send(`${message.author}, the counting should start at 1.`);
-                    }
+                if (lastBotMessage && parseInt(message.content) == 1) {
+                    message.react('✅');
                     return;
                 }
 
                 // Check if the last user message content is a valid number
                 const lastNumber = parseInt(lastMessage.content);
-                if (isNaN(lastNumber)) {
-                    return message.channel.send(`${message.author}, the last message was not a valid number! Please start the counting over from 1.`);
-                }
-
-                // Parse the current message content as a number
                 const currentNumber = parseInt(message.content);
-                if (isNaN(currentNumber)) {
+                if (isNaN(lastNumber) || isNaN(currentNumber)) {
+                    message.delete();
                     return message.channel.send(`${message.author}, please only count with numbers!`);
                 }
 
                 // Check if the current message is the correct next number in the sequence
                 if (currentNumber !== lastNumber + 1) {
-                    resetEnforced = true;
                     return message.channel.send(`${message.author} did not count correctly! The next number should've been ${lastNumber + 1}. Please start over from 1.`);
                 }
 
