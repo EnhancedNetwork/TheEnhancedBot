@@ -1,6 +1,6 @@
 const { Events } = require('discord.js');
 const { getGuild } = require('../API Functions/guilds');
-const reset = false;
+let reset = false;
 
 module.exports = {
     name: Events.MessageCreate,
