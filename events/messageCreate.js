@@ -15,14 +15,12 @@ module.exports = {
             if (message.member.roles.cache.has(guild.countingBlacklistRole)) return message.delete();
 
             try {
-                // Fetch the last few messages, including both bot and user messages
-                const messages = await message.channel.messages.fetch({ limit: 10 });
+                // Fetch messages BEFORE the current message to avoid including the current message in the check
+                const messages = await message.channel.messages.fetch({ limit: 10, before: message.id });
 
-                // Filter out the current user's message from the fetched messages
-                const validMessages = messages
-                    .filter(msg => !msg.author.bot && msg.id !== message.id); // Exclude bot messages and current user's message
-
-                const lastMessage = validMessages.first(); // Get the most recent valid user message
+                // Filter out bot messages and only consider user messages
+                const validMessages = messages.filter(msg => !msg.author.bot);
+                const lastMessage = validMessages.first(); // The most recent valid user message before the current one
 
                 // Check for any bot messages indicating a counting failure
                 const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
