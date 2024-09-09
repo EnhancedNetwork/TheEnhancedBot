@@ -19,7 +19,9 @@ module.exports = {
                         { name: 'Admire Log Channel', value: 'admireLogChannel' },
                         { name: 'Admin Role', value: 'adminRole' },
                         { name: 'Mod Role', value: 'modRole' },
-                        { name: 'Say Command Log Channel', value: 'sayLogChannel' }
+                        { name: 'Say Command Log Channel', value: 'sayLogChannel' },
+                        { name: 'Counting Channel', value: 'countingChannel' },
+                        { name: 'Counting Blacklist Role', value: 'countingBlacklistRole' }
                     )
             )
             .addStringOption(option =>
