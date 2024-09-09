@@ -17,6 +17,10 @@ module.exports = {
             // Fetch the last few messages, including both bot and user messages
             const messages = await message.channel.messages.fetch({ limit: 5 });
 
+            // Filter only the user messages (not bot messages)
+            const validMessages = messages.filter(msg => !msg.author.bot);
+            const lastMessage = validMessages.last();
+
             // Check for any bot messages indicating a counting failure
             const lastBotMessage = messages.find(msg => msg.author.bot && msg.content.includes('did not count correctly'));
 
@@ -34,11 +38,7 @@ module.exports = {
                 return;
             }
 
-            // Otherwise, get the last valid user message
-            const validMessages = messages.filter(msg => !msg.author.bot);
-            const lastMessage = validMessages.last();
-
-            // If no previous messages exist, expect the current message to be 1
+            // If no previous valid messages exist, expect the current message to be 1
             if (!lastMessage) {
                 if (parseInt(message.content) === 1) {
                     message.react('✅');
