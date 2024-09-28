@@ -87,7 +87,7 @@ module.exports = {
             const langInput = interaction.options.getString('language') || "en_US";
             console.log(`rolecmd: Language - ${langInput}`);
 
-            const langJson = await fetchJson(`https://raw.githubusercontent.com/0xDrMoe/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`);
+            const langJson = await fetchJson(`https://raw.githubusercontent.com/EnhancedNetwork/TownofHost-Enhanced/main/Resources/Lang/${langInput}.json`);
             const lang = internalNameToRoleName(langJson);
 
             if (!lang[roleInput]) {
