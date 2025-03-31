@@ -18,7 +18,6 @@ module.exports = {
                 )),
     async execute(interaction) {
         const tag = interaction.options.getString('tag');
-        const channel = interaction.channel;
         let messageContent = '';
 
         switch (tag) {
