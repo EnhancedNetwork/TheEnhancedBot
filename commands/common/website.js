@@ -58,10 +58,10 @@ module.exports = {
             .setDescription("This is the official website for Town of Host: Enhanced.\nHere you can find the latest news, roles, and more!")
             .setFooter({ text: "Town of Host: Enhanced", iconURL: "https://i.ibb.co/RvX9B3s/Yeetus-TOHE-Pic.png" })
             .addFields(
-                { name: "Need to Install TOHE?", value: "[Install Instructions](https://tohe.weareten.ca/Install.html)", inline: true },
+                { name: "Installation Help + FAQ!", value: "[FAQ + Installation](https://tohe.weareten.ca/FAQ.html)", inline: true },
                 { name: `Want TOHE ${await getLatestTag()}?`, value: `[Steam/Epic Games](${versionURLs[0]}) | [Xbox App](${versionURLs[1]})`, inline: true },
-                { name: "Questions?", value: "[FAQ](https://tohe.weareten.ca/FAQ.html)", inline: true },
-                { name: "Learn About the Mod!", value: "[Roles](https://tohe.weareten.ca/Roles.html)", inline: true },
+                { name: "Helpful Resources!", value: "[Helpful Resources](https://tohe.weareten.ca/Resources.html)", inline: true },
+                { name: "Learn About the Mod!", value: "[Roles + Settings](https://tohe.weareten.ca/Roles.html)", inline: true },
                 { name: "Learn About the Team!", value: "[About Us](https://tohe.weareten.ca/AboutUs.html)", inline: true },
                 { name: "Want to support TOHE?", value: "[Purchase a Package!](https://weareten.ca/TOHE/)", inline: true },
                 { name: "Privacy Policy", value: "[Privacy Policy](https://weareten.ca/privacy)", inline: true },
